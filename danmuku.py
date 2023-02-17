@@ -395,29 +395,6 @@ class Player_shoot(pygame.sprite.Sprite):
         if(self.pos[1]) < -1:  # 离开屏幕后不再更新位置
             self.kill()
 
-# 自机控制
-# 返回的值决定了速度
-
-
-def player_control():
-    left = pygame.key.get_pressed()[pygame.K_LEFT]
-    up = pygame.key.get_pressed()[pygame.K_UP]
-    down = pygame.key.get_pressed()[pygame.K_DOWN]
-    right = pygame.key.get_pressed()[pygame.K_RIGHT]
-    # 按下shift可以加速，目前是三倍速
-    shift = 2 * pygame.key.get_pressed()[pygame.K_LSHIFT] + 1
-    del_x = right - left
-    del_y = down - up
-    # 限制玩家不能离开屏幕
-    if player.pos[0] < 5 and del_x < 0:
-        del_x = 0
-    elif player.pos[0] > WIDTH - 6 and del_x > 0:
-        del_x = 0
-    if player.pos[1] < 5 and del_y < 0:
-        del_y = 0
-    elif player.pos[1] > HEIGHT - 6 and del_y > 0:
-        del_y = 0
-    return shift * Vector2(del_x, del_y)
 
 
 # 自机
@@ -435,6 +412,30 @@ class Player(pygame.sprite.Sprite):
         self.is_boom = False
         self.power = 1  # 攻击力
 
+    # 自机控制
+    # 返回的值决定了速度
+
+
+    def _player_control():
+        left = pygame.key.get_pressed()[pygame.K_LEFT]
+        up = pygame.key.get_pressed()[pygame.K_UP]
+        down = pygame.key.get_pressed()[pygame.K_DOWN]
+        right = pygame.key.get_pressed()[pygame.K_RIGHT]
+        # 按下shift可以加速，目前是三倍速
+        shift = 2 * pygame.key.get_pressed()[pygame.K_LSHIFT] + 1
+        del_x = right - left
+        del_y = down - up
+        # 限制玩家不能离开屏幕
+        if player.pos[0] < 5 and del_x < 0:
+            del_x = 0
+        elif player.pos[0] > WIDTH - 6 and del_x > 0:
+            del_x = 0
+        if player.pos[1] < 5 and del_y < 0:
+            del_y = 0
+        elif player.pos[1] > HEIGHT - 6 and del_y > 0:
+            del_y = 0
+        return shift * Vector2(del_x, del_y)
+
     def update(self):
         # boom只有一帧，update前先结束掉
         self.is_boom = False
@@ -446,7 +447,7 @@ class Player(pygame.sprite.Sprite):
         if self.power > 5:
             self.power = 5
         # 移动
-        self.pos += player_control()
+        self.pos += self._player_control()
         self.rect.center = self.pos
         current_time = pygame.time.get_ticks()
         # 根据间隔检测是否能打出子弹
