@@ -442,7 +442,7 @@ class Player(pygame.sprite.Sprite):
         # 死亡判定
         if self.hp <= 0:
             self.kill()
-            pass
+            return
         # 攻击力不会大于五
         if self.power > 5:
             self.power = 5
