@@ -1,7 +1,6 @@
 import pygame
 import math
 from pygame.math import Vector2
-import player_re as p_re
 
 # 各类参数
 # 窗口大小
@@ -171,7 +170,7 @@ class Cubic_Bezier_Curve(pygame.sprite.Sprite):
     def update(self):
         curr_time = pygame.time.get_ticks()
         time_pass = curr_time - self.ini_time
-        t = time_pass / 1500
+        t = time_pass / 3000
         sec1 = ((1 - t) ** 3) * self.p1
         sec2 = 3 * t * ((1 - t) ** 2) * self.p2
         sec3 = 3 * (1 - t) * (t ** 2) * self.p3
@@ -255,6 +254,7 @@ class Enemy_1(pygame.sprite.Sprite):
         self.pos = pos
         self.rect = self.image.get_rect(center=self.pos)
         self.ini_time = pygame.time.get_ticks()
+        self.last_shot = pygame.time.get_ticks()
         self.maxhp = 20
         self.hp = self.maxhp
 
@@ -263,8 +263,9 @@ class Enemy_1(pygame.sprite.Sprite):
             self.pos += Vector2(0, 1)
         self.rect.center = self.pos
         curr_time = pygame.time.get_ticks()
-        time_pass = curr_time - self.ini_time
-        if time_pass % 1000 <= 16 and time_pass >= 1000:
+        time_pass = curr_time - self.last_shot
+        if time_pass / 1000 >= 1:
+            self.last_shot = pygame.time.get_ticks()
             for i in range(1):
                 for j in range(1):
                     curve_l = Cubic_Bezier_Curve('l', i, j, self.pos)
@@ -416,7 +417,7 @@ class Player(pygame.sprite.Sprite):
     # 返回的值决定了速度
 
 
-    def _player_control():
+    def _player_control(self):
         left = pygame.key.get_pressed()[pygame.K_LEFT]
         up = pygame.key.get_pressed()[pygame.K_UP]
         down = pygame.key.get_pressed()[pygame.K_DOWN]
@@ -566,6 +567,7 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+            pygame.quit()
     # 根据时间线创建敌人波次
     # 第一波
     if pygame.time.get_ticks() > timeline['wave1']['time'] and timeline['wave1']['do'] == False:
