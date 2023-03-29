@@ -22,6 +22,6 @@ You start with 4 HP and 3 bomb. Every single enemy's bullet will cause 1 hp lost
 
 ## TODO
 * Currently only 10 enemy comes up in total 2 waves, you win if you kill them all. Need to add more content.
-* Currently game has not start buttom or screen, game start running after game window shows up. Need tp add a init screen with start game buttom.
+* Currently game has not start buttom or screen, game start running after game window shows up. Need to add a init screen with start game buttom.
 * Currently game stuck after you die. Need to add a replay buttom.
 * Currently code is not under OOD and hard to modify. Need to rewrite the code ASAP.
