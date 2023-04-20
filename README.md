@@ -18,7 +18,7 @@ python danmuku.py
 * Press X to use the bomb (Notice there is 1 second between two bomb use)
 * Hold arrow key to move
 
-You start with 4 HP and 3 bomb. Every single enemy's bullet will cause 1 hp lost. There is no interval between two incoming damage, so if you hit by 4 enemy's bullets in the same time, you die instantly.
+You start with 4 HP and 3 bomb. Every single enemy's bullet will cause 1 hp lost. There is no interval between two incoming damage, so if you hit by 4 enemy's bullets at the same time, you die instantly.
 
 ## TODO
 * Currently only 10 enemy comes up in total 2 waves, you win if you kill them all. Need to add more content.
