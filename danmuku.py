@@ -5,6 +5,7 @@ from pygame.math import Vector2
 from pygame.sprite import Group
 from enemy.baseEnemy import BaseEnemy
 from bullet.baseBullet import BaseBullet
+from player_rel.player import Player, player_ammo
 
 # 各类参数
 # 窗口大小
@@ -42,7 +43,7 @@ class Normal_Bullet(pygame.sprite.Sprite):
         if self.pos.distance_to(player.pos) < 7:
             player.hp -= 1
             self.kill()
-        if player.is_boom:
+        if player.is_bomb:
             if self.pos.distance_to(player.pos) < 500:
                 self.kill()
 
@@ -96,7 +97,7 @@ class Ellipse_Bullet(pygame.sprite.Sprite):
         if self.pos.distance_to(player.pos) < 7:
             player.hp -= 1
             self.kill()
-        if player.is_boom:
+        if player.is_bomb:
             if self.pos.distance_to(player.pos) < 500:
                 self.kill()
 
@@ -124,7 +125,7 @@ class Atom_Bullet(pygame.sprite.Sprite):
         if self.pos.distance_to(player.pos) < 7:
             player.hp -= 1
             self.kill()
-        if player.is_boom:
+        if player.is_bomb:
             if self.pos.distance_to(player.pos) < 500:
                 self.kill()
         self.rect.center = self.pos
@@ -151,7 +152,7 @@ class Snake_Bullet(pygame.sprite.Sprite):
         del_v = Vector2(del_x, del_y)
         self.pos += del_v
         self.rect.center = self.pos
-        if player.is_boom:
+        if player.is_bomb:
             if self.pos.distance_to(player.pos) < 500:
                 self.kill()
 
@@ -194,7 +195,7 @@ class Cubic_Bezier_Curve(pygame.sprite.Sprite):
         if pos.distance_to(player.pos) < 7:
             player.hp -= 1
             self.kill()
-        if player.is_boom:
+        if player.is_bomb:
             if pos.distance_to(player.pos) < 500:
                 self.kill()
 
@@ -369,108 +370,9 @@ class Bomb_Node(pygame.sprite.Sprite):
         del_v = Vector2(0, 1)
         self.pos += del_v
         self.rect.center = self.pos
-        if self.pos.distance_to(player.pos) < 7 and player.boom < 4:
-            player.boom += 1
+        if self.pos.distance_to(player.pos) < 7 and player.bomb < 4:
+            player.bomb += 1
             self.kill()
-
-
-# 玩家子弹
-class Player_shoot(pygame.sprite.Sprite):
-    def __init__(self, power_level: int, index):
-        pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load("./images/ammo.png")
-        # 根据power额外射出子弹
-        if power_level == 1:
-            self.pos = Vector2(player.pos)
-        elif power_level == 2:
-            self.pos = Vector2(player.pos) + Vector2(-2 + index * 4, 0)
-        else:
-            del_y = 0
-            if index != 1:
-                del_y = 1
-            self.pos = Vector2(player.pos) + Vector2(-4 + index * 4, del_y)
-        self.rect = self.image.get_rect(center=self.pos)
-
-    def update(self):
-        self.pos += Vector2(0, -4)  # 子弹速度
-        self.rect.center = self.pos
-        if (self.pos[1]) < -1:  # 离开屏幕后不再更新位置
-            self.kill()
-
-
-# 自机
-class Player(pygame.sprite.Sprite):
-    def __init__(self):
-        pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load("./images/player.png")
-        self.pos = Vector2(200, 560)
-        self.rect = self.image.get_rect(center=self.pos)
-        self.hp = 6  # 血量
-        self.last_shoot = 0  # 用于计算射击间隔
-        self.last_boom = 0  # 以下三条用于玩家的消弹技能
-        self.boom = 3
-        self.is_boom = False
-        self.power = 1  # 攻击力
-
-    # 自机控制
-    # 返回的值决定了速度
-
-    def _player_control(self):
-        left = pygame.key.get_pressed()[pygame.K_LEFT]
-        up = pygame.key.get_pressed()[pygame.K_UP]
-        down = pygame.key.get_pressed()[pygame.K_DOWN]
-        right = pygame.key.get_pressed()[pygame.K_RIGHT]
-        # 按下shift可以加速，目前是三倍速
-        shift = 2 * pygame.key.get_pressed()[pygame.K_LSHIFT] + 1
-        del_x = right - left
-        del_y = down - up
-        # 限制玩家不能离开屏幕
-        if player.pos[0] < 5 and del_x < 0:
-            del_x = 0
-        elif player.pos[0] > WIDTH - 6 and del_x > 0:
-            del_x = 0
-        if player.pos[1] < 5 and del_y < 0:
-            del_y = 0
-        elif player.pos[1] > HEIGHT - 6 and del_y > 0:
-            del_y = 0
-        return shift * Vector2(del_x, del_y)
-
-    def update(self):
-        # boom只有一帧，update前先结束掉
-        self.is_boom = False
-        # 死亡判定
-        if self.hp <= 0:
-            self.kill()
-            return
-        # 攻击力不会大于五
-        if self.power > 5:
-            self.power = 5
-        # 移动
-        self.pos += self._player_control()
-        self.rect.center = self.pos
-        current_time = pygame.time.get_ticks()
-        # 根据间隔检测是否能打出子弹
-        if (
-            pygame.key.get_pressed()[pygame.K_z] == 1
-            and current_time - self.last_shoot >= 200
-        ):
-            self.last_shoot = current_time
-            # 根据power射出多个子弹，每点攻击力加一颗子弹， 最多三个子弹
-            power_Level = int(self.power)
-            if self.power > 3:
-                power_Level = 3
-            for i in range(power_Level):
-                ammo = Player_shoot(power_Level, i)
-                player_ammo.add(ammo)
-        # 检测是否可以boom，并在可以时激活
-        if (
-            pygame.key.get_pressed()[pygame.K_x] == 1
-            and self.boom > 0
-            and current_time - self.last_boom >= 3000
-        ):
-            self.last_boom = current_time
-            self.is_boom = True
-            self.boom -= 1
 
 
 # 绘制血量图像
@@ -497,7 +399,7 @@ class Bomb(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center=self.pos)
 
     def update(self):
-        if self.index >= player.boom:
+        if self.index >= player.bomb:
             self.kill()
 
 
@@ -508,11 +410,10 @@ player_re.add(player)
 for i in range(player.hp):
     hp = Heart(i)
     player_re.add(hp)
-for i in range(player.boom):
+for i in range(player.bomb):
     boom = Bomb(i)
     player_re.add(boom)
 
-player_ammo = pygame.sprite.Group()
 
 enemy = pygame.sprite.Group()
 
@@ -561,7 +462,7 @@ while running:
     Info1 = Font.render("YOU WIN!!", False, Red, White)
     Info2 = Font.render("NO BOOM!", False, Black, White)
     Info3 = Font.render(str(smooth_fps), False, Black, None)
-    if player.boom > 0 and pygame.time.get_ticks() - player.last_boom >= 3000:
+    if player.bomb > 0 and pygame.time.get_ticks() - player.last_bomb >= 3000:
         Info2 = Font.render("BOOM!", False, Black, White)
     # 点×时退出。。
     for event in pygame.event.get():
