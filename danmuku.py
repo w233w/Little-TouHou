@@ -20,10 +20,9 @@ Black = 0, 0, 0
 White = 255, 255, 255
 Red = 255, 0, 0
 
+
 # 常规直线射弹
 # 根据弹数向下方发射直线弹幕,pos是起始点位
-
-
 class Normal_Bullet(pygame.sprite.Sprite):
     def __init__(self, total_num, index, angle, pos=Vector2(200, 200)):
         pygame.sprite.Sprite.__init__(self)
@@ -51,8 +50,6 @@ class Normal_Bullet(pygame.sprite.Sprite):
 # 椭圆形环绕射弹
 # ref:https://www.tiktok.com/@zakslab/video/6998525847296544006?_d=secCgYIASAHKAESPgo8SZe%2Fu4XTclFurcuEF0%2FkL147NxpLBJ2FCrJpWYTPhELOsZcu8ZkXTYFAOMEy7tP71iFB45MZ9OmFikv5GgA%3D&checksum=459a2b85cc6b6a50c31179982ede4c737029566aadb5979aa1f42e0c7bf8eb1b&language=en&preview_pb=0&sec_user_id=MS4wLjABAAAA-eranv3NR2ui2P79L5-HjN4oNRcWeeDCY1AD47zu6uxx1so4B-e4-vB6uOspMRIG&share_app_id=1233&share_item_id=6998525847296544006&share_link_id=4952D1C4-A915-4C20-9A87-2E550031C632&source=h5_m&timestamp=1629602102&tt_from=copy&u_code=dk0db1feehg16m&user_id=6991323682690466821&utm_campaign=client_share&utm_medium=ios&utm_source=copy&_r=1&is_copy_url=1&is_from_webapp=v1
 # 几何中心在椭圆长轴和端州的焦点上
-
-
 class Ellipse_Bullet(pygame.sprite.Sprite):
     def __init__(self, pos, total_num, index, radius):
         pygame.sprite.Sprite.__init__(self)
@@ -107,8 +104,6 @@ class Ellipse_Bullet(pygame.sprite.Sprite):
 # 开花型环绕子弹（一圈）
 # 几何中心在椭圆长轴的一个端点上
 # total_num表示每圈一共有几个，index代表环上的第几个，group表示层数，pos表示子弹射出的位置
-
-
 class Atom_Bullet(pygame.sprite.Sprite):
     def __init__(self, total_num, index, group=0, pos=Vector2(200, 200)):
         pygame.sprite.Sprite.__init__(self)
@@ -138,8 +133,6 @@ class Atom_Bullet(pygame.sprite.Sprite):
 # 蛇形弹幕（单个）
 # 数个子弹从屏幕正上方落下，运动时左右摆动，遵从正弦函数曲线。
 # total_num共有几个子弹下落，index代表从左数的第几个，speed代表速度和幅度
-
-
 class Snake_Bullet(pygame.sprite.Sprite):
     def __init__(self, total_num, index=0, speed=1):
         pygame.sprite.Sprite.__init__(self)
@@ -166,8 +159,6 @@ class Snake_Bullet(pygame.sprite.Sprite):
 # 三次贝塞尔曲线弹幕（自机狙）
 # side决定子弹射出的方向，index和group决定了子弹运动的幅度，index决定宽度，group决定高度，pos是子弹射出的位置
 # 子弹射出后会追踪射出时玩家的位置，仅一次。玩家在平行移动后理应可以轻松躲开子弹。
-
-
 class Cubic_Bezier_Curve(pygame.sprite.Sprite):
     def __init__(self, side, index=0, group=0, pos=Vector2(200, 200)):
         pygame.sprite.Sprite.__init__(self)
@@ -212,8 +203,6 @@ class Cubic_Bezier_Curve(pygame.sprite.Sprite):
 # 子弹在板底以海浪型波动
 # total_num是密度，index可以大于total_num（如果需要平移的话）,shift是偏移量
 # total_num应该是一个大数字，否则不会有连贯的视觉效果
-
-
 class Button_Wave(pygame.sprite.Sprite):
     def __init__(self, total_num, index, height=1, shift=0):
         pygame.sprite.Sprite.__init__(self)
@@ -244,8 +233,6 @@ class Button_Wave(pygame.sprite.Sprite):
 
 # 血条
 # test
-
-
 def draw_hp_bar(pos, angle):
     # Center and (inner)radius of arc
     cx, cy, r, ir = pos[0], pos[1], 20, 17
@@ -268,14 +255,12 @@ def draw_hp_bar(pos, angle):
 
 # 一号敌人
 # 会不断发射两颗贝塞尔曲线弹幕
-
-
 class Enemy_1(BaseEnemy):
     def __init__(self, pos: Vector2, *groups: Group) -> None:
         super().__init__(*groups, pos=pos)
         self.image = pygame.image.load("./images/enemy_1.png")
         self.rect = self.image.get_rect(center=self.pos)
-        self.last_shot = pygame.time.get_ticks()
+        self.last_shot = self.ini_time
         self.maxhp = 20
         self.hp = self.maxhp
 
@@ -286,7 +271,7 @@ class Enemy_1(BaseEnemy):
         curr_time = pygame.time.get_ticks()
         time_pass = curr_time - self.last_shot
         if time_pass / 1000 >= 1:
-            self.last_shot = pygame.time.get_ticks()
+            self.last_shot = curr_time
             for i in range(1):
                 for j in range(1):
                     curve_l = Cubic_Bezier_Curve("l", i, j, self.pos)
@@ -303,13 +288,12 @@ class Enemy_1(BaseEnemy):
 
 # 二号敌人
 # 会不断发射4颗普通子弹
-
-
 class Enemy_2(BaseEnemy):
     def __init__(self, pos: Vector2, *groups: Group) -> None:
         super().__init__(pos, *groups)
         self.image = pygame.image.load("./images/enemy_1.png")
         self.rect = self.image.get_rect(center=self.pos)
+        self.last_shot = self.ini_time
         self.maxhp = 10
         self.hp = self.maxhp
 
@@ -318,8 +302,9 @@ class Enemy_2(BaseEnemy):
             self.pos += Vector2(0, 1)
         self.rect.center = self.pos
         curr_time = pygame.time.get_ticks()
-        time_pass = curr_time - self.ini_time
-        if time_pass % 1000 <= 16 and time_pass >= 1000:
+        time_pass = curr_time - self.last_shot
+        if time_pass >= 1000:
+            self.last_shot = curr_time
             for i in range(4):
                 normal = Normal_Bullet(4, i, 30, self.pos)
                 bullets.add(normal)
@@ -334,8 +319,6 @@ class Enemy_2(BaseEnemy):
 
 # 能量点数
 # 玩家触碰到后会增加power
-
-
 class Power_Node(pygame.sprite.Sprite):
     def __init__(self, pos):
         pygame.sprite.Sprite.__init__(self)
@@ -355,8 +338,6 @@ class Power_Node(pygame.sprite.Sprite):
 
 # 生命点数
 # 玩家触碰到后会增加power
-
-
 class Hp_Node(pygame.sprite.Sprite):
     def __init__(self, pos):
         pygame.sprite.Sprite.__init__(self)
@@ -376,8 +357,6 @@ class Hp_Node(pygame.sprite.Sprite):
 
 # 大招点数
 # 玩家触碰到后会增加power
-
-
 class Bomb_Node(pygame.sprite.Sprite):
     def __init__(self, pos):
         pygame.sprite.Sprite.__init__(self)
@@ -396,8 +375,6 @@ class Bomb_Node(pygame.sprite.Sprite):
 
 
 # 玩家子弹
-
-
 class Player_shoot(pygame.sprite.Sprite):
     def __init__(self, power_level: int, index):
         pygame.sprite.Sprite.__init__(self)
@@ -422,8 +399,6 @@ class Player_shoot(pygame.sprite.Sprite):
 
 
 # 自机
-
-
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
