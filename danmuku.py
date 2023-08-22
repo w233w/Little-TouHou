@@ -499,8 +499,6 @@ class Player(pygame.sprite.Sprite):
 
 
 # 绘制血量图像
-
-
 class Heart(pygame.sprite.Sprite):
     def __init__(self, index):
         pygame.sprite.Sprite.__init__(self)
@@ -515,8 +513,6 @@ class Heart(pygame.sprite.Sprite):
 
 
 # 绘制大招图像
-
-
 class Bomb(pygame.sprite.Sprite):
     def __init__(self, index):
         pygame.sprite.Sprite.__init__(self)
@@ -579,17 +575,17 @@ timeline = {"wave1": {"time": 3000, "do": False}, "wave2": {"time": 15000, "do":
 
 running = True
 
-count17 = 0
-countall = 0
+smooth_fps = 60
 
 # 主体
 while running:
     # 决定游戏刷新率
     clock.tick(FPS)
     delay = int(1000 / clock.get_time())
+    smooth_fps = int(round((smooth_fps * 10 + delay) / 11))
     Info1 = Font.render("YOU WIN!!", False, Red, White)
     Info2 = Font.render("NO BOOM!", False, Black, White)
-    Info3 = Font.render(str(delay), False, White, Black)
+    Info3 = Font.render(str(smooth_fps), False, Black, None)
     if player.boom > 0 and pygame.time.get_ticks() - player.last_boom >= 3000:
         Info2 = Font.render("BOOM!", False, Black, White)
     # 点×时退出。。
@@ -629,7 +625,7 @@ while running:
     if len(enemy.sprites()) == 0 and pygame.time.get_ticks() > 5000:
         screen.blit(Info1, (100, 0))
     screen.blit(Info2, (260, 0))
-    screen.blit(Info3, (260, 50))
+    screen.blit(Info3, (340, 50))
     # 更新sprites
     # 永远先更新玩家
     player_re.update()
