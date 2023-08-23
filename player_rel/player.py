@@ -26,7 +26,7 @@ class Player(pygame.sprite.Sprite):
         self.is_bomb = False
         self.bomb_interval = 3000  # ms
 
-        self.power = 5  # 攻击力
+        self.power = 3  # 攻击力
 
     # 自机控制
     # 返回的值决定了速度
@@ -71,12 +71,10 @@ class Player(pygame.sprite.Sprite):
             and current_time - self.last_shoot >= self.shoot_interval
         ):
             self.last_shoot = current_time
-            # 根据power射出多个子弹，每点攻击力加一颗子弹， 最多三个子弹
-            power_Level = int(self.power)
-            if self.power > 3:
-                power_Level = 3
-            for i in range(power_Level):
-                PlayerShoot(power_Level, i, self.pos, [player_ammo])
+            # 根据power射出多个子弹，每两点攻击力加一颗子弹， 最多三个子弹
+            ammo_num = int((self.power + 1) // 2)
+            for i in range(ammo_num):
+                PlayerShoot(self.power, i, self.pos, [player_ammo])
         # 检测是否可以boom，并在可以时激活
         if (
             pygame.key.get_pressed()[pygame.K_x] == 1

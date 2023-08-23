@@ -258,7 +258,7 @@ def draw_hp_bar(pos, angle):
 # 会不断发射两颗贝塞尔曲线弹幕
 class Enemy_1(BaseEnemy):
     def __init__(self, pos: Vector2, *groups: Group) -> None:
-        super().__init__(*groups, pos=pos)
+        super().__init__(pos, *groups)
         self.image = pygame.image.load("./images/enemy_1.png")
         self.rect = self.image.get_rect(center=self.pos)
         self.last_shot = self.ini_time
@@ -311,8 +311,8 @@ class Enemy_2(BaseEnemy):
                 bullets.add(normal)
         for ammo in player_ammo:
             if self.pos.distance_to(ammo.pos) < 7:
+                self.hp -= ammo.power
                 ammo.kill()
-                self.hp -= player.power
         if self.hp <= 0:
             items.add(Power_Node(self.pos))
             self.kill()
@@ -338,7 +338,7 @@ class Power_Node(pygame.sprite.Sprite):
 
 
 # 生命点数
-# 玩家触碰到后会增加power
+# 玩家触碰到后会增加hp
 class Hp_Node(pygame.sprite.Sprite):
     def __init__(self, pos):
         pygame.sprite.Sprite.__init__(self)
@@ -357,7 +357,7 @@ class Hp_Node(pygame.sprite.Sprite):
 
 
 # 大招点数
-# 玩家触碰到后会增加power
+# 玩家触碰到后会增加bomb
 class Bomb_Node(pygame.sprite.Sprite):
     def __init__(self, pos):
         pygame.sprite.Sprite.__init__(self)
@@ -415,7 +415,7 @@ for i in range(player.bomb):
     player_re.add(boom)
 
 
-enemy = pygame.sprite.Group()
+enemys = pygame.sprite.Group()
 
 # 创造初始子弹
 bullets = pygame.sprite.Group()
@@ -447,7 +447,10 @@ Font = pygame.font.SysFont("timesnewroman", 30)
 
 # 时间线
 # 之后改用SQL
-timeline = {"wave1": {"time": 3000, "do": False}, "wave2": {"time": 15000, "do": False}}
+timeline = {
+    "wave1": {"time": 3000, "done": False},
+    "wave2": {"time": 15000, "done": False},
+}
 
 running = True
 
@@ -455,6 +458,9 @@ smooth_fps = 60
 
 # 主体
 while running:
+    # test
+    print(player.power)
+
     # 决定游戏刷新率
     clock.tick(FPS)
     delay = int(1000 / clock.get_time())
@@ -473,32 +479,28 @@ while running:
     # 第一波
     if (
         pygame.time.get_ticks() > timeline["wave1"]["time"]
-        and timeline["wave1"]["do"] == False
+        and timeline["wave1"]["done"] == False
     ):
         for i in range(3):
-            enemy_1 = Enemy_1(Vector2(100 + 100 * i, 0))
-            enemy.add(enemy_1)
+            Enemy_1(Vector2(100 + 100 * i, 0), enemys)
         for i in range(2):
-            enemy_2 = Enemy_2(Vector2(150 + 100 * i, 0))
-            enemy.add(enemy_2)
-        timeline["wave1"]["do"] = True
+            Enemy_2(Vector2(150 + 100 * i, 0), enemys)
+        timeline["wave1"]["done"] = True
     # 2
     if (
         pygame.time.get_ticks() > timeline["wave2"]["time"]
-        and timeline["wave2"]["do"] == False
+        and timeline["wave2"]["done"] == False
     ):
         for i in range(3):
-            enemy_1 = Enemy_1(Vector2(125 + 100 * i, 0))
-            enemy.add(enemy_1)
+            Enemy_1(Vector2(125 + 100 * i, 0), enemys)
         for i in range(2):
-            enemy_2 = Enemy_2(Vector2(175 + 100 * i, 0))
-            enemy.add(enemy_2)
-        timeline["wave2"]["do"] = True
+            Enemy_2(Vector2(175 + 100 * i, 0), enemys)
+        timeline["wave2"]["done"] = True
 
     # 先铺背景再画sprites
     screen.fill(pygame.Color(BackgroundColor))
     gameplay.fill(pygame.Color(White))
-    if len(enemy.sprites()) == 0 and pygame.time.get_ticks() > 5000:
+    if len(enemys.sprites()) == 0 and pygame.time.get_ticks() > 5000:
         screen.blit(Info1, (100, 0))
     screen.blit(Info2, (260, 0))
     screen.blit(Info3, (340, 50))
@@ -506,16 +508,16 @@ while running:
     # 永远先更新玩家
     player_re.update()
     bullets.update()
-    enemy.update()
+    enemys.update()
     player_ammo.update()
     items.update()
     # 画不分先后
     bullets.draw(screen)
     player_re.draw(screen)
-    enemy.draw(screen)
+    enemys.draw(screen)
     player_ammo.draw(screen)
     items.draw(screen)
-    for en in enemy:
+    for en in enemys:
         draw_hp_bar(en.pos, int(90 * en.hp / en.maxhp))
     # 更新画布
     pygame.display.flip()
