@@ -1,5 +1,5 @@
 import pygame
-from player_rel.playerShot import PlayerShoot
+from player_rel.playerShot import PlayerShot
 from utils.const import *
 
 
@@ -71,7 +71,7 @@ class Player(pygame.sprite.Sprite):
             # 根据power射出多个子弹，每两点攻击力加一颗子弹， 最多三个子弹
             ammo_num = int((self.power + 1) // 2)
             for i in range(ammo_num):
-                PlayerShoot(self.power, i, self.pos, [player_ammo])
+                PlayerShot(self.power, i, self.pos, [player_ammo])
         # 检测是否可以boom，并在可以时激活
         if (
             pygame.key.get_pressed()[pygame.K_x] == 1

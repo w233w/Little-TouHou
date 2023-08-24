@@ -3,7 +3,7 @@ from pygame.sprite import Group
 
 
 # 玩家子弹
-class PlayerShoot(sprite.Sprite):
+class PlayerShot(sprite.Sprite):
     def __init__(self, power: int, index: int, init_pos: Vector2, *groups: Group):
         super().__init__(*groups)
         self.image = image.load("./images/ammo.png")

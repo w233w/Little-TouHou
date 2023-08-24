@@ -3,7 +3,7 @@ import math
 from pygame import Vector2
 from pygame.sprite import Group
 from utils.const import *
-from player_rel import Player, player_ammo
+from player_rel import Player, PlayerShot, player_ammo
 from bullet_rel import BaseBullet, bullets
 from enemy_rel import BaseEnemy, enemys
 
@@ -226,13 +226,11 @@ def draw_hp_bar(pos, angle):
 # 一号敌人
 # 会不断发射两颗贝塞尔曲线弹幕
 class Enemy_1(BaseEnemy):
-    def __init__(self, pos: Vector2, *groups: Group) -> None:
-        super().__init__(pos, *groups)
+    def __init__(self, pos: Vector2, max_hp: int, *groups: Group) -> None:
+        super().__init__(pos, max_hp, *groups)
         self.image = pygame.image.load("./images/enemy_1.png")
         self.mask = pygame.mask.from_surface(self.image)
         self.rect = self.image.get_rect(center=self.pos)
-        self.max_hp = 20
-        self.hp = self.max_hp
 
     def update(self):
         if self.pos[1] < 200:
@@ -246,10 +244,7 @@ class Enemy_1(BaseEnemy):
                 for j in range(1):
                     Cubic_Bezier_Curve(self.pos, "l", i, j, bullets)
                     Cubic_Bezier_Curve(self.pos, "r", i, j, bullets)
-        for ammo in player_ammo:
-            if self.pos.distance_to(ammo.pos) < 7:
-                ammo.kill()
-                self.hp -= player.power
+        self.on_hit(player_ammo=player_ammo)
         if self.hp <= 0:
             self.kill()
 
@@ -257,13 +252,11 @@ class Enemy_1(BaseEnemy):
 # 二号敌人
 # 会不断发射4颗普通子弹
 class Enemy_2(BaseEnemy):
-    def __init__(self, pos: Vector2, *groups: Group) -> None:
-        super().__init__(pos, *groups)
+    def __init__(self, pos: Vector2, max_hp: int, *groups: Group) -> None:
+        super().__init__(pos, max_hp, *groups)
         self.image = pygame.image.load("./images/enemy_2.png")
         self.mask = pygame.mask.from_surface(self.image)
         self.rect = self.image.get_rect(center=self.pos)
-        self.max_hp = 10
-        self.hp = self.max_hp
 
     def update(self):
         if self.pos[1] < 100:
@@ -275,10 +268,7 @@ class Enemy_2(BaseEnemy):
             self.last_shot = curr_time
             for i in range(4):
                 Normal_Bullet(self.pos, 4, i, 30, bullets)
-        for ammo in player_ammo:
-            if self.pos.distance_to(ammo.pos) < 7:
-                self.hp -= ammo.power
-                ammo.kill()
+        self.on_hit(player_ammo)
         if self.hp <= 0:
             items.add(Power_Node(self.pos))
             self.kill()
@@ -380,9 +370,6 @@ for i in range(player.bomb):
     boom = Bomb(i)
     player_re.add(boom)
 
-
-enemys = pygame.sprite.Group()
-
 # for i in range(3):
 #     for j in range(4):
 #         atom = Atom_Bullet(3, i, j, (200, 200))
@@ -441,9 +428,9 @@ while running:
         and timeline["wave1"]["done"] == False
     ):
         for i in range(3):
-            Enemy_1(Vector2(100 + 100 * i, 0), enemys)
+            Enemy_1(Vector2(100 + 100 * i, 0), 20, enemys)
         for i in range(2):
-            Enemy_2(Vector2(150 + 100 * i, 0), enemys)
+            Enemy_2(Vector2(150 + 100 * i, 0), 10, enemys)
         timeline["wave1"]["done"] = True
     # 2
     if (
@@ -451,9 +438,9 @@ while running:
         and timeline["wave2"]["done"] == False
     ):
         for i in range(3):
-            Enemy_1(Vector2(125 + 100 * i, 0), enemys)
+            Enemy_1(Vector2(125 + 100 * i, 0), 20, enemys)
         for i in range(2):
-            Enemy_2(Vector2(175 + 100 * i, 0), enemys)
+            Enemy_2(Vector2(175 + 100 * i, 0), 10, enemys)
         timeline["wave2"]["done"] = True
 
     # 先铺背景再画sprites
@@ -477,6 +464,7 @@ while running:
     player_ammo.draw(screen)
     items.draw(screen)
     for en in enemys:
-        draw_hp_bar(en.pos, int(90 * en.hp / en.maxhp))
+        if en.hp < en.max_hp:
+            draw_hp_bar(en.pos, int(90 * en.hp / en.max_hp))
     # 更新画布
     pygame.display.flip()
