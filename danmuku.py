@@ -2,10 +2,10 @@ import pygame
 import math
 from pygame import Vector2
 from pygame.sprite import Group
-from enemy.baseEnemy import BaseEnemy
 from utils.const import *
 from player_rel import Player, player_ammo
 from bullet_rel import BaseBullet, bullets
+from enemy_rel import BaseEnemy, enemys
 
 
 # 常规直线射弹
@@ -229,10 +229,10 @@ class Enemy_1(BaseEnemy):
     def __init__(self, pos: Vector2, *groups: Group) -> None:
         super().__init__(pos, *groups)
         self.image = pygame.image.load("./images/enemy_1.png")
+        self.mask = pygame.mask.from_surface(self.image)
         self.rect = self.image.get_rect(center=self.pos)
-        self.last_shot = self.ini_time
-        self.maxhp = 20
-        self.hp = self.maxhp
+        self.max_hp = 20
+        self.hp = self.max_hp
 
     def update(self):
         if self.pos[1] < 200:
@@ -260,10 +260,10 @@ class Enemy_2(BaseEnemy):
     def __init__(self, pos: Vector2, *groups: Group) -> None:
         super().__init__(pos, *groups)
         self.image = pygame.image.load("./images/enemy_2.png")
+        self.mask = pygame.mask.from_surface(self.image)
         self.rect = self.image.get_rect(center=self.pos)
-        self.last_shot = self.ini_time
-        self.maxhp = 10
-        self.hp = self.maxhp
+        self.max_hp = 10
+        self.hp = self.max_hp
 
     def update(self):
         if self.pos[1] < 100:
