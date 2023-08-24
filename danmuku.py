@@ -5,7 +5,7 @@ from pygame.sprite import Group
 from enemy.baseEnemy import BaseEnemy
 from utils.const import *
 from player_rel import Player, player_ammo
-from bullet_rel import BaseBullet
+from bullet_rel import BaseBullet, bullets
 
 
 # 常规直线射弹
@@ -244,10 +244,8 @@ class Enemy_1(BaseEnemy):
             self.last_shot = curr_time
             for i in range(1):
                 for j in range(1):
-                    curve_l = Cubic_Bezier_Curve(self.pos, "l", i, j)
-                    bullets.add(curve_l)
-                    curve_r = Cubic_Bezier_Curve(self.pos, "r", i, j)
-                    bullets.add(curve_r)
+                    Cubic_Bezier_Curve(self.pos, "l", i, j, bullets)
+                    Cubic_Bezier_Curve(self.pos, "r", i, j, bullets)
         for ammo in player_ammo:
             if self.pos.distance_to(ammo.pos) < 7:
                 ammo.kill()
@@ -276,8 +274,7 @@ class Enemy_2(BaseEnemy):
         if time_pass >= 1000:
             self.last_shot = curr_time
             for i in range(4):
-                normal = Normal_Bullet(self.pos, 4, i, 30)
-                bullets.add(normal)
+                Normal_Bullet(self.pos, 4, i, 30, bullets)
         for ammo in player_ammo:
             if self.pos.distance_to(ammo.pos) < 7:
                 self.hp -= ammo.power
@@ -386,20 +383,16 @@ for i in range(player.bomb):
 
 enemys = pygame.sprite.Group()
 
-# 创造初始子弹
-bullets = pygame.sprite.Group()
 # for i in range(3):
 #     for j in range(4):
 #         atom = Atom_Bullet(3, i, j, (200, 200))
 #         bullets.add(atom)
 
 for i in range(1000):
-    wave = Button_Wave(None, 100, i, 1, -1)
-    bullets.add(wave)
+    Button_Wave(None, 100, i, 1, -1, bullets)
 
 for i in range(6):
-    atom = Ellipse_Bullet(Vector2(200, 200), 6, i, 100)
-    bullets.add(atom)
+    Ellipse_Bullet(Vector2(200, 200), 6, i, 100, bullets)
 
 items = pygame.sprite.Group()
 

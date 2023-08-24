@@ -1,4 +1,4 @@
-from pygame import Vector2, image
+from pygame import Vector2, image, mask
 from pygame.sprite import Sprite, Group
 import pygame.time
 from utils.const import *
@@ -9,6 +9,7 @@ class BaseBullet(Sprite):
         super().__init__(*groups)
         self.pos = pos
         self.image = image.load("./images/bullet.png")
+        self.mask = mask.from_surface(self.image)
         self.ini_time = pygame.time.get_ticks()
         self.rect = self.image.get_rect(center=self.pos)
 
