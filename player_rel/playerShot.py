@@ -1,4 +1,4 @@
-from pygame import sprite, image, Vector2
+from pygame import sprite, image, Vector2, mask
 from pygame.sprite import Group
 
 
@@ -7,6 +7,7 @@ class PlayerShot(sprite.Sprite):
     def __init__(self, power: int, index: int, init_pos: Vector2, *groups: Group):
         super().__init__(*groups)
         self.image = image.load("./images/ammo.png")
+        self.mask = mask.from_surface(self.image)
         self.power = power
         # 根据power决定额外子弹的数量和位置
         if power <= 2:

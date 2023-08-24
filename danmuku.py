@@ -386,7 +386,6 @@ items = pygame.sprite.Group()
 # Init pygame & Crate screen
 pygame.init()
 screen = pygame.display.set_mode(SIZE)
-gameplay = pygame.Surface((10, 10), 0, screen)
 pygame.display.set_caption("测试")
 clock = pygame.time.Clock()
 # 状态栏
@@ -445,7 +444,6 @@ while running:
 
     # 先铺背景再画sprites
     screen.fill(pygame.Color(BackgroundColor))
-    gameplay.fill(pygame.Color(White))
     if len(enemys.sprites()) == 0 and pygame.time.get_ticks() > 5000:
         screen.blit(Info1, (100, 0))
     screen.blit(Info2, (260, 0))
@@ -457,7 +455,7 @@ while running:
     enemys.update()
     player_ammo.update()
     items.update()
-    # 画不分先后
+    # 不会有重叠，所以画不分先后
     bullets.draw(screen)
     player_re.draw(screen)
     enemys.draw(screen)
