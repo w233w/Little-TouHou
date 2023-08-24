@@ -1,25 +1,11 @@
 import pygame
 import math
 from pygame import Vector2
-from pygame.math import Vector2
 from pygame.sprite import Group
 from enemy.baseEnemy import BaseEnemy
 from bullet.baseBullet import BaseBullet
 from player_rel.player import Player, player_ammo
-
-# 各类参数
-# 窗口大小
-WIDTH = 400
-HEIGHT = 600
-SIZE = WIDTH, HEIGHT
-HEADLINE = 40
-# 刷新率
-FPS = 60
-# 颜色
-BackgroundColor = 255, 229, 204
-Black = 0, 0, 0
-White = 255, 255, 255
-Red = 255, 0, 0
+from utils.const import *
 
 
 # 常规直线射弹
