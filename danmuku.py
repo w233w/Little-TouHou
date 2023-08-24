@@ -3,24 +3,23 @@ import math
 from pygame import Vector2
 from pygame.sprite import Group
 from enemy.baseEnemy import BaseEnemy
-from bullet.baseBullet import BaseBullet
 from utils.const import *
 from player_rel import Player, player_ammo
+from bullet_rel import BaseBullet
 
 
 # 常规直线射弹
 # 根据弹数向下方发射直线弹幕,pos是起始点位
-class Normal_Bullet(pygame.sprite.Sprite):
-    def __init__(self, total_num, index, angle, pos=Vector2(200, 200)):
-        pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load("./images/bullet.png")
-        self.rect = self.image.get_rect(center=pos)
+class Normal_Bullet(BaseBullet):
+    def __init__(self, pos: Vector2, total_num, index, angle, *groups: Group) -> None:
+        super().__init__(pos, *groups)
         self.index = index
-        self.pos = pos
         self.degree = angle / (total_num - 1) * self.index - angle / 2
         self.radian = math.radians(self.degree)
 
     def update(self):
+        if self.out_of_bound():
+            self.kill()
         del_x = math.sin(self.radian) * 2
         del_y = math.cos(self.radian) * 2
         del_v = Vector2(del_x, del_y)
@@ -37,15 +36,11 @@ class Normal_Bullet(pygame.sprite.Sprite):
 # 椭圆形环绕射弹
 # ref:https://www.tiktok.com/@zakslab/video/6998525847296544006?_d=secCgYIASAHKAESPgo8SZe%2Fu4XTclFurcuEF0%2FkL147NxpLBJ2FCrJpWYTPhELOsZcu8ZkXTYFAOMEy7tP71iFB45MZ9OmFikv5GgA%3D&checksum=459a2b85cc6b6a50c31179982ede4c737029566aadb5979aa1f42e0c7bf8eb1b&language=en&preview_pb=0&sec_user_id=MS4wLjABAAAA-eranv3NR2ui2P79L5-HjN4oNRcWeeDCY1AD47zu6uxx1so4B-e4-vB6uOspMRIG&share_app_id=1233&share_item_id=6998525847296544006&share_link_id=4952D1C4-A915-4C20-9A87-2E550031C632&source=h5_m&timestamp=1629602102&tt_from=copy&u_code=dk0db1feehg16m&user_id=6991323682690466821&utm_campaign=client_share&utm_medium=ios&utm_source=copy&_r=1&is_copy_url=1&is_from_webapp=v1
 # 几何中心在椭圆长轴和端州的焦点上
-class Ellipse_Bullet(pygame.sprite.Sprite):
-    def __init__(self, pos, total_num, index, radius):
-        pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load("./images/bullet.png")
-        self.rect = self.image.get_rect(center=pos)
+class Ellipse_Bullet(BaseBullet):
+    def __init__(self, pos: Vector2, total_num, index, radius, *groups: Group) -> None:
+        super().__init__(pos, *groups)
         self.index = index
         self.radius = radius
-        self.pos = pos
-        self.ini_time = pygame.time.get_ticks()
         self.radian = math.radians(360 / total_num * self.index)
 
     def update(self):
@@ -91,14 +86,11 @@ class Ellipse_Bullet(pygame.sprite.Sprite):
 # 开花型环绕子弹（一圈）
 # 几何中心在椭圆长轴的一个端点上
 # total_num表示每圈一共有几个，index代表环上的第几个，group表示层数，pos表示子弹射出的位置
-class Atom_Bullet(pygame.sprite.Sprite):
-    def __init__(self, total_num, index, group=0, pos=Vector2(200, 200)):
-        pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load("./images/bullet.png")
-        self.rect = self.image.get_rect(center=pos)
+class Atom_Bullet(BaseBullet):
+    def __init__(self, pos: Vector2, total_num, index, group=0, *groups: Group) -> None:
+        super().__init__(pos, *groups)
         self.index = index
         self.group = group
-        self.pos = pos
         self.degree = 360 / total_num * self.index
 
     def update(self):
@@ -120,14 +112,13 @@ class Atom_Bullet(pygame.sprite.Sprite):
 # 蛇形弹幕（单个）
 # 数个子弹从屏幕正上方落下，运动时左右摆动，遵从正弦函数曲线。
 # total_num共有几个子弹下落，index代表从左数的第几个，speed代表速度和幅度
-class Snake_Bullet(pygame.sprite.Sprite):
-    def __init__(self, total_num, index=0, speed=1):
-        pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load("./images/bullet.png")
-        self.x = (WIDTH / (total_num - 1)) * index
+class Snake_Bullet(BaseBullet):
+    def __init__(
+        self, pos: Vector2, total_num, index=0, speed=1, *groups: Group
+    ) -> None:
         self.pos = Vector2(self.x, HEADLINE)
-        self.rect = self.image.get_rect(center=self.pos)
-        self.ini_time = pygame.time.get_ticks()
+        super().__init__(pos, *groups)
+        self.x = (WIDTH / (total_num - 1)) * index
         self.speed = speed
 
     def update(self):
@@ -146,12 +137,9 @@ class Snake_Bullet(pygame.sprite.Sprite):
 # 三次贝塞尔曲线弹幕（自机狙）
 # side决定子弹射出的方向，index和group决定了子弹运动的幅度，index决定宽度，group决定高度，pos是子弹射出的位置
 # 子弹射出后会追踪射出时玩家的位置，仅一次。玩家在平行移动后理应可以轻松躲开子弹。
-class Cubic_Bezier_Curve(pygame.sprite.Sprite):
-    def __init__(self, side, index=0, group=0, pos=Vector2(200, 200)):
-        pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load("./images/bullet.png")
-        self.rect = self.image.get_rect(center=pos)
-        self.ini_time = pygame.time.get_ticks()
+class Cubic_Bezier_Curve(BaseBullet):
+    def __init__(self, pos: Vector2, side, index=0, group=0, *groups: Group) -> None:
+        super().__init__(pos, *groups)
         self.p1 = Vector2(pos)
         if side == "l":
             self.p2 = Vector2(200 - 30 * group, 100 - 30 * group)
@@ -171,12 +159,7 @@ class Cubic_Bezier_Curve(pygame.sprite.Sprite):
         sec4 = (t**3) * self.p4
         pos = sec1 + sec2 + sec3 + sec4
         self.rect.center = pos
-        if (
-            self.rect.x < -4.5
-            or self.rect.x > WIDTH + 4.5
-            or self.rect.y < -4.5
-            or self.rect.y > HEIGHT + 4.5
-        ):
+        if self.out_of_bound():
             self.kill()
         if pos.distance_to(player.pos) < 7:
             player.hp -= 1
@@ -190,15 +173,15 @@ class Cubic_Bezier_Curve(pygame.sprite.Sprite):
 # 子弹在板底以海浪型波动
 # total_num是密度，index可以大于total_num（如果需要平移的话）,shift是偏移量
 # total_num应该是一个大数字，否则不会有连贯的视觉效果
-class Button_Wave(pygame.sprite.Sprite):
-    def __init__(self, total_num, index, height=1, shift=0):
-        pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load("./images/bullet.png")
+class Button_Wave(BaseBullet):
+    def __init__(
+        self, pos: Vector2, total_num, index, height=1, shift=0, *groups: Group
+    ) -> None:
+        self.x = (WIDTH / (total_num - 1)) * index
+        pos = Vector2(self.x, HEIGHT + 10)
+        super().__init__(pos, *groups)
         self.index = index
         self.x = (WIDTH / (total_num - 1)) * index
-        self.pos = Vector2(self.x, HEIGHT + 10)
-        self.rect = self.image.get_rect(center=self.pos)
-        self.ini_time = pygame.time.get_ticks()
         self.height = height
         self.shift = shift
 
@@ -261,9 +244,9 @@ class Enemy_1(BaseEnemy):
             self.last_shot = curr_time
             for i in range(1):
                 for j in range(1):
-                    curve_l = Cubic_Bezier_Curve("l", i, j, self.pos)
+                    curve_l = Cubic_Bezier_Curve(self.pos, "l", i, j)
                     bullets.add(curve_l)
-                    curve_r = Cubic_Bezier_Curve("r", i, j, self.pos)
+                    curve_r = Cubic_Bezier_Curve(self.pos, "r", i, j)
                     bullets.add(curve_r)
         for ammo in player_ammo:
             if self.pos.distance_to(ammo.pos) < 7:
@@ -293,7 +276,7 @@ class Enemy_2(BaseEnemy):
         if time_pass >= 1000:
             self.last_shot = curr_time
             for i in range(4):
-                normal = Normal_Bullet(4, i, 30, self.pos)
+                normal = Normal_Bullet(self.pos, 4, i, 30)
                 bullets.add(normal)
         for ammo in player_ammo:
             if self.pos.distance_to(ammo.pos) < 7:
@@ -411,7 +394,7 @@ bullets = pygame.sprite.Group()
 #         bullets.add(atom)
 
 for i in range(1000):
-    wave = Button_Wave(100, i, 1, -1)
+    wave = Button_Wave(None, 100, i, 1, -1)
     bullets.add(wave)
 
 for i in range(6):
