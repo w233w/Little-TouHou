@@ -292,7 +292,7 @@ class Enemy_1(BaseEnemy):
 class Enemy_2(BaseEnemy):
     def __init__(self, pos: Vector2, *groups: Group) -> None:
         super().__init__(pos, *groups)
-        self.image = pygame.image.load("./images/enemy_1.png")
+        self.image = pygame.image.load("./images/enemy_2.png")
         self.rect = self.image.get_rect(center=self.pos)
         self.last_shot = self.ini_time
         self.maxhp = 10
@@ -323,7 +323,7 @@ class Enemy_2(BaseEnemy):
 class Power_Node(pygame.sprite.Sprite):
     def __init__(self, pos):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load("./images/player.png")
+        self.image = pygame.image.load("./images/power.png")
         self.pos = pos
         self.rect = self.image.get_rect(center=self.pos)
         self.ini_time = pygame.time.get_ticks()
@@ -342,7 +342,7 @@ class Power_Node(pygame.sprite.Sprite):
 class Hp_Node(pygame.sprite.Sprite):
     def __init__(self, pos):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load("./images/player.png")
+        self.image = pygame.image.load("./images/hp_drop.png")
         self.pos = pos
         self.rect = self.image.get_rect(center=self.pos)
         self.ini_time = pygame.time.get_ticks()
@@ -361,7 +361,7 @@ class Hp_Node(pygame.sprite.Sprite):
 class Bomb_Node(pygame.sprite.Sprite):
     def __init__(self, pos):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load("./images/player.png")
+        self.image = pygame.image.load("./images/bomb_drop.png")
         self.pos = pos
         self.rect = self.image.get_rect(center=self.pos)
         self.ini_time = pygame.time.get_ticks()
@@ -458,9 +458,6 @@ smooth_fps = 60
 
 # 主体
 while running:
-    # test
-    print(player.power)
-
     # 决定游戏刷新率
     clock.tick(FPS)
     delay = int(1000 / clock.get_time())
