@@ -1,10 +1,7 @@
 import pygame
 from player_rel.playerShot import PlayerShoot
+from utils.const import *
 
-# 各类参数
-# 窗口大小
-WIDTH = 400
-HEIGHT = 600
 
 player_ammo = pygame.sprite.Group()
 

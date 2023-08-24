@@ -4,8 +4,8 @@ from pygame import Vector2
 from pygame.sprite import Group
 from enemy.baseEnemy import BaseEnemy
 from bullet.baseBullet import BaseBullet
-from player_rel.player import Player, player_ammo
 from utils.const import *
+from player_rel import Player, player_ammo
 
 
 # 常规直线射弹
