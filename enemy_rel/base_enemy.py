@@ -23,3 +23,4 @@ class BaseEnemy(sprite.Sprite):
         )
         for ammo in collide_sprites:
             self.hp -= ammo.power
+        del collide_sprites[:]
