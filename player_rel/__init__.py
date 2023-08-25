@@ -1,2 +1,2 @@
 from .player import Player
-from .playerShot import PlayerShot
+from .player_shot import PlayerShot

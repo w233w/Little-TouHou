@@ -1,5 +1,5 @@
 import pygame
-from player_rel.playerShot import PlayerShot
+from player_rel.player_shot import PlayerShot
 from utils.const import *
 from group_controller import drop_items, player_ammo
 
