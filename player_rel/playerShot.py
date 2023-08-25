@@ -15,9 +15,7 @@ class PlayerShot(sprite.Sprite):
         elif power <= 4:
             self.pos = Vector2(init_pos) + Vector2(-2 + index * 4, 0)
         else:
-            del_y = 0
-            if index != 1:
-                del_y = 1
+            del_y = index != 1
             self.pos = Vector2(init_pos) + Vector2(-4 + index * 4, del_y)
         self.rect = self.image.get_rect(center=self.pos)
 

@@ -39,14 +39,18 @@ class Player(pygame.sprite.Sprite):
         del_x = right - left
         del_y = down - up
         # 限制玩家不能离开屏幕
-        if self.pos[0] < 5 and del_x < 0:
+        if self.pos.x < 5 and del_x < 0:
             del_x = 0
-        elif self.pos[0] > WIDTH - 6 and del_x > 0:
+            self.pos.x = 4
+        elif self.pos.x > WIDTH - 6 and del_x > 0:
             del_x = 0
-        if self.pos[1] < 5 and del_y < 0:
+            self.pos.x = WIDTH - 5
+        if self.pos.y < 5 and del_y < 0:
             del_y = 0
-        elif self.pos[1] > HEIGHT - 6 and del_y > 0:
+            self.pos.y = 4
+        elif self.pos.y > HEIGHT - 6 and del_y > 0:
             del_y = 0
+            self.pos.y = HEIGHT - 5
         return shift * pygame.Vector2(del_x, del_y)
 
     def update(self):
@@ -75,8 +79,8 @@ class Player(pygame.sprite.Sprite):
                 PlayerShot(self.power, i, self.pos, [player_ammo])
         # 检测是否可以boom，并在可以时激活
         if (
-            pygame.key.get_pressed()[pygame.K_x] == 1
-            and self.bomb > 0
+            self.bomb > 0
+            and pygame.key.get_pressed()[pygame.K_x] == 1
             and current_time - self.last_bomb >= self.bomb_interval
         ):
             self.last_bomb = current_time
