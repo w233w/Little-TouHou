@@ -286,7 +286,10 @@ class PowerNode(BaseDrop):
         self.rect = self.image.get_rect(center=self.pos)
 
     def update(self):
-        del_v = Vector2(0, 1)
+        if self.below_screen():
+            self.kill()
+        self.magnite(player.pos)
+        del_v = self.speed
         self.pos += del_v
         self.rect.center = self.pos
         if self.pos.distance_to(player.pos) < 7:
@@ -304,7 +307,10 @@ class HpNode(BaseDrop):
         self.rect = self.image.get_rect(center=self.pos)
 
     def update(self):
-        del_v = Vector2(0, 1)
+        if self.below_screen():
+            self.kill()
+        self.magnite(player.pos)
+        del_v = self.speed
         self.pos += del_v
         self.rect.center = self.pos
         if self.pos.distance_to(player.pos) < 7 and player.hp < 6:
@@ -322,7 +328,10 @@ class BombNode(BaseDrop):
         self.rect = self.image.get_rect(center=self.pos)
 
     def update(self):
-        del_v = Vector2(0, 1)
+        if self.below_screen():
+            self.kill()
+        self.magnite(player.pos)
+        del_v = self.speed
         self.pos += del_v
         self.rect.center = self.pos
         if self.pos.distance_to(player.pos) < 7 and player.bomb < 4:
