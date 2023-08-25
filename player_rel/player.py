@@ -70,7 +70,6 @@ class Player(pygame.sprite.Sprite):
                 self.hp += 1
             elif item.type == "bomb":
                 self.bomb += 1
-        del collided_items[:]
         # 攻击力不会大于五
         if self.power > 5:
             self.power = 5
@@ -87,7 +86,7 @@ class Player(pygame.sprite.Sprite):
             # 根据power射出多个子弹，每两点攻击力加一颗子弹， 最多三个子弹
             ammo_num = int((self.power + 1) // 2)
             for i in range(ammo_num):
-                PlayerShot(self.power, i, self.pos, [player_ammo])
+                PlayerShot(self.power, i, self.pos, player_ammo)
         # 检测是否可以boom，并在可以时激活
         if (
             self.bomb > 0
