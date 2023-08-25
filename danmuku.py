@@ -3,11 +3,12 @@ import math
 from pygame import Vector2
 from pygame.sprite import Group
 from utils.const import *
-from player_rel import Player, PlayerShot, player_ammo
-from bullet_rel import BaseBullet, bullets
-from enemy_rel import BaseEnemy, enemys
-from drop_rel import BaseDrop, drop_items
+from player_rel import Player, PlayerShot
+from bullet_rel import BaseBullet
+from enemy_rel import BaseEnemy
+from drop_rel import BaseDrop
 from statistics import mean
+from group_controller import *
 
 
 # 常规直线射弹
@@ -27,11 +28,11 @@ class NormalBullet(BaseBullet):
         del_v = Vector2(del_x, del_y)
         self.pos = self.pos + del_v
         self.rect.center = self.pos
-        if self.pos.distance_to(player.pos) < 7:
-            player.hp -= 1
+        if self.pos.distance_to(player.sprite.pos) < 7:
+            player.sprite.hp -= 1
             self.kill()
-        if player.is_bomb:
-            if self.pos.distance_to(player.pos) < 500:
+        if player.sprite.is_bomb:
+            if self.pos.distance_to(player.sprite.pos) < 500:
                 self.kill()
 
 
@@ -77,11 +78,11 @@ class EllipseBullet(BaseBullet):
         bullet_pos = Vector2(bullets_pos_x, bullets_pos_y)
 
         self.rect.center = bullet_pos
-        if self.pos.distance_to(player.pos) < 7:
-            player.hp -= 1
+        if self.pos.distance_to(player.sprite.pos) < 7:
+            player.sprite.hp -= 1
             self.kill()
-        if player.is_bomb:
-            if self.pos.distance_to(player.pos) < 500:
+        if player.sprite.is_bomb:
+            if self.pos.distance_to(player.sprite.pos) < 500:
                 self.kill()
 
 
@@ -102,11 +103,11 @@ class AtomBullet(BaseBullet):
         del_y = math.cos(radian) * 2
         del_v = Vector2(del_x, del_y)
         self.pos += del_v
-        if self.pos.distance_to(player.pos) < 7:
-            player.hp -= 1
+        if self.pos.distance_to(player.sprite.pos) < 7:
+            player.sprite.hp -= 1
             self.kill()
-        if player.is_bomb:
-            if self.pos.distance_to(player.pos) < 500:
+        if player.sprite.is_bomb:
+            if self.pos.distance_to(player.sprite.pos) < 500:
                 self.kill()
         self.rect.center = self.pos
 
@@ -131,8 +132,8 @@ class SnakeBullet(BaseBullet):
         del_v = Vector2(del_x, del_y)
         self.pos += del_v
         self.rect.center = self.pos
-        if player.is_bomb:
-            if self.pos.distance_to(player.pos) < 500:
+        if player.sprite.is_bomb:
+            if self.pos.distance_to(player.sprite.pos) < 500:
                 self.kill()
 
 
@@ -149,7 +150,7 @@ class CubicBezierCurve(BaseBullet):
         else:
             self.p2 = Vector2(200 + 30 * group, 100 - 30 * group)
             self.p3 = Vector2(300 + 70 * index, 200 - 30 * index)
-        self.p4 = Vector2(player.pos)
+        self.p4 = Vector2(player.sprite.pos)
 
     def update(self):
         curr_time = pygame.time.get_ticks()
@@ -163,11 +164,11 @@ class CubicBezierCurve(BaseBullet):
         self.rect.center = pos
         if self.out_of_bound():
             self.kill()
-        if pos.distance_to(player.pos) < 7:
-            player.hp -= 1
+        if pos.distance_to(player.sprite.pos) < 7:
+            player.sprite.hp -= 1
             self.kill()
-        if player.is_bomb:
-            if pos.distance_to(player.pos) < 500:
+        if player.sprite.is_bomb:
+            if pos.distance_to(player.sprite.pos) < 500:
                 self.kill()
 
 
@@ -246,7 +247,7 @@ class Enemy_1(BaseEnemy):
                 for j in range(1):
                     CubicBezierCurve(self.pos, "l", i, j, bullets)
                     CubicBezierCurve(self.pos, "r", i, j, bullets)
-        self.on_hit(player_ammo=player_ammo)
+        self.on_hit(player_ammo)
         if self.hp <= 0:
             self.kill()
 
@@ -284,17 +285,15 @@ class PowerNode(BaseDrop):
         self.image = pygame.image.load("./images/power.png")
         self.mask = pygame.mask.from_surface(self.image)
         self.rect = self.image.get_rect(center=self.pos)
+        self.type = "energy"
 
     def update(self):
         if self.below_screen():
             self.kill()
-        self.magnite(player.pos)
+        self.magnite(player.sprite.pos)
         del_v = self.speed
         self.pos += del_v
         self.rect.center = self.pos
-        if self.pos.distance_to(player.pos) < 7:
-            player.power += 0.5
-            self.kill()
 
 
 # 生命点数
@@ -305,17 +304,15 @@ class HpNode(BaseDrop):
         self.image = pygame.image.load("./images/hp_drop.png")
         self.mask = pygame.mask.from_surface(self.image)
         self.rect = self.image.get_rect(center=self.pos)
+        self.type = "hp"
 
     def update(self):
         if self.below_screen():
             self.kill()
-        self.magnite(player.pos)
+        self.magnite(player.sprite.pos)
         del_v = self.speed
         self.pos += del_v
         self.rect.center = self.pos
-        if self.pos.distance_to(player.pos) < 7 and player.hp < 6:
-            player.hp += 1
-            self.kill()
 
 
 # 大招点数
@@ -326,17 +323,15 @@ class BombNode(BaseDrop):
         self.image = pygame.image.load("./images/bomb_drop.png")
         self.mask = pygame.mask.from_surface(self.image)
         self.rect = self.image.get_rect(center=self.pos)
+        self.type = "bomb"
 
     def update(self):
         if self.below_screen():
             self.kill()
-        self.magnite(player.pos)
+        self.magnite(player.sprite.pos)
         del_v = self.speed
         self.pos += del_v
         self.rect.center = self.pos
-        if self.pos.distance_to(player.pos) < 7 and player.bomb < 4:
-            player.bomb += 1
-            self.kill()
 
 
 # 绘制血量图像
@@ -349,7 +344,7 @@ class Heart(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center=self.pos)
 
     def update(self):
-        if self.index >= player.hp:
+        if self.index >= player.sprite.hp:
             self.kill()
 
 
@@ -363,17 +358,16 @@ class Bomb(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center=self.pos)
 
     def update(self):
-        if self.index >= player.bomb:
+        if self.index >= player.sprite.bomb:
             self.kill()
 
 
-# 创造玩家
-player_re = pygame.sprite.Group()
-player = Player(player_re)
-for i in range(player.hp):
+# 创造玩家相关内容
+player.add(Player())
+for i in range(player.sprite.hp):
     hp = Heart(i)
     player_re.add(hp)
-for i in range(player.bomb):
+for i in range(player.sprite.bomb):
     boom = Bomb(i)
     player_re.add(boom)
 
@@ -417,14 +411,17 @@ smooth_fps = [60] * 60
 while running:
     # 决定游戏刷新率
     clock.tick(FPS)
-    delay = int(1000 / clock.get_time())
-    smooth_fps = [delay] + smooth_fps
-    smooth_fps.pop()
+    delay = 1000 / clock.get_time()
+    smooth_fps.append(delay)
+    smooth_fps.pop(0)
     real_fps = round(mean(smooth_fps))
     Info1 = Font.render("YOU WIN!!", False, Red, White)
     Info2 = Font.render("NO BOOM!", False, Black, White)
     Info3 = Font.render(str(real_fps), False, Black, None)
-    if player.bomb > 0 and pygame.time.get_ticks() - player.last_bomb >= 3000:
+    if (
+        player.sprite.bomb > 0
+        and pygame.time.get_ticks() - player.sprite.last_bomb >= 3000
+    ):
         Info2 = Font.render("BOOM!", False, Black, White)
     # 点×时退出。。
     for event in pygame.event.get():
@@ -461,12 +458,14 @@ while running:
     screen.blit(Info3, (340, 50))
     # 更新sprites
     # 永远先更新玩家
+    player.update()
     player_re.update()
     bullets.update()
     enemys.update()
     player_ammo.update()
     drop_items.update()
     # 不会有重叠，所以画不分先后
+    player.draw(screen)
     bullets.draw(screen)
     player_re.draw(screen)
     enemys.draw(screen)

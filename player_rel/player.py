@@ -1,9 +1,7 @@
 import pygame
 from player_rel.playerShot import PlayerShot
 from utils.const import *
-
-
-player_ammo = pygame.sprite.Group()
+from group_controller import drop_items, player_ammo
 
 
 class Player(pygame.sprite.Sprite):
@@ -54,12 +52,25 @@ class Player(pygame.sprite.Sprite):
         return shift * pygame.Vector2(del_x, del_y)
 
     def update(self):
+        print(self.power)
         # boom只有一帧，update前先结束掉
         self.is_bomb = False
         # 死亡判定
         if self.hp <= 0:
             self.kill()
             return
+        # 吃道具判定
+        collided_items = pygame.sprite.spritecollide(
+            self, drop_items, True, pygame.sprite.collide_mask
+        )
+        for item in collided_items:
+            if item.type == "energy":
+                self.power += 0.5
+            elif item.type == "hp":
+                self.hp += 1
+            elif item.type == "bomb":
+                self.bomb += 1
+        del collided_items[:]
         # 攻击力不会大于五
         if self.power > 5:
             self.power = 5

@@ -1,2 +1,2 @@
-from .player import Player, player_ammo
+from .player import Player
 from .playerShot import PlayerShot
