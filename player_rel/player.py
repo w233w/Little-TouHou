@@ -57,6 +57,7 @@ class Player(pygame.sprite.Sprite):
         self.is_bomb = False
         # 死亡判定
         if self.hp <= 0:
+            # TODO change death behavior
             self.kill()
             return
         # 吃道具判定

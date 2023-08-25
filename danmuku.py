@@ -3,10 +3,10 @@ import math
 from pygame import Vector2
 from pygame.sprite import Group
 from utils.const import *
-from player_rel import Player, PlayerShot
+from player_rel import Player
 from bullet_rel import BaseBullet
 from enemy_rel import BaseEnemy
-from drop_rel import BaseDrop
+from drop_rel import PowerDrop
 from statistics import mean
 from group_controller import *
 
@@ -273,65 +273,8 @@ class Enemy_2(BaseEnemy):
                 NormalBullet(self.pos, 4, i, 30, bullets)
         self.on_hit(player_ammo)
         if self.hp <= 0:
-            PowerNode(self.pos, drop_items)
+            PowerDrop(self.pos, drop_items)
             self.kill()
-
-
-# 能量点数
-# 玩家触碰到后会增加power
-class PowerNode(BaseDrop):
-    def __init__(self, pos: Vector2, *groups: Group) -> None:
-        super().__init__(pos, *groups)
-        self.image = pygame.image.load("./images/power.png")
-        self.mask = pygame.mask.from_surface(self.image)
-        self.rect = self.image.get_rect(center=self.pos)
-        self.type = "energy"
-
-    def update(self):
-        if self.below_screen():
-            self.kill()
-        self.magnite(player.sprite.pos)
-        del_v = self.speed
-        self.pos += del_v
-        self.rect.center = self.pos
-
-
-# 生命点数
-# 玩家触碰到后会增加hp
-class HpNode(BaseDrop):
-    def __init__(self, pos: Vector2, *groups: Group) -> None:
-        super().__init__(pos, *groups)
-        self.image = pygame.image.load("./images/hp_drop.png")
-        self.mask = pygame.mask.from_surface(self.image)
-        self.rect = self.image.get_rect(center=self.pos)
-        self.type = "hp"
-
-    def update(self):
-        if self.below_screen():
-            self.kill()
-        self.magnite(player.sprite.pos)
-        del_v = self.speed
-        self.pos += del_v
-        self.rect.center = self.pos
-
-
-# 大招点数
-# 玩家触碰到后会增加bomb
-class BombNode(BaseDrop):
-    def __init__(self, pos: Vector2, *groups: Group) -> None:
-        super().__init__(pos, *groups)
-        self.image = pygame.image.load("./images/bomb_drop.png")
-        self.mask = pygame.mask.from_surface(self.image)
-        self.rect = self.image.get_rect(center=self.pos)
-        self.type = "bomb"
-
-    def update(self):
-        if self.below_screen():
-            self.kill()
-        self.magnite(player.sprite.pos)
-        del_v = self.speed
-        self.pos += del_v
-        self.rect.center = self.pos
 
 
 # 绘制血量图像
@@ -370,11 +313,6 @@ for i in range(player.sprite.hp):
 for i in range(player.sprite.bomb):
     boom = Bomb(i)
     player_re.add(boom)
-
-# for i in range(3):
-#     for j in range(4):
-#         atom = AtomBullet(3, i, j, (200, 200))
-#         bullets.add(atom)
 
 for i in range(1000):
     ButtonWave(None, 100, i, 1, -1, bullets)
@@ -463,7 +401,7 @@ while running:
     bullets.update()
     enemys.update()
     player_ammo.update()
-    drop_items.update()
+    drop_items.update(player_pos=player.sprite.pos)  # 所有drop_item只有一个入参，即玩家位置
     # 不会有重叠，所以画不分先后
     player.draw(screen)
     bullets.draw(screen)
