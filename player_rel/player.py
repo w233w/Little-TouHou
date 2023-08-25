@@ -7,8 +7,8 @@ player_ammo = pygame.sprite.Group()
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self):
-        pygame.sprite.Sprite.__init__(self)
+    def __init__(self, *groups: pygame.sprite.Group):
+        pygame.sprite.Sprite.__init__(self, *groups)
         self.image = pygame.image.load("./images/player.png")
         self.mask = pygame.mask.from_surface(self.image)
         self.pos = pygame.Vector2(200, 560)

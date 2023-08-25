@@ -358,9 +358,8 @@ class Bomb(pygame.sprite.Sprite):
 
 
 # 创造玩家
-player = Player()
 player_re = pygame.sprite.Group()
-player_re.add(player)
+player = Player(player_re)
 for i in range(player.hp):
     hp = Heart(i)
     player_re.add(hp)
@@ -415,8 +414,8 @@ while running:
     # 点×时退出。。
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            running = False
             pygame.quit()
+            exit()
     # 根据时间线创建敌人波次
     # 第一波
     if (
