@@ -52,7 +52,6 @@ class Player(pygame.sprite.Sprite):
         return shift * pygame.Vector2(del_x, del_y)
 
     def update(self):
-        print(self.power)
         # boom只有一帧，update前先结束掉
         self.is_bomb = False
         # 死亡判定
