@@ -7,6 +7,7 @@ from player_rel import Player, PlayerShot, player_ammo
 from bullet_rel import BaseBullet, bullets
 from enemy_rel import BaseEnemy, enemys
 from drop_rel import BaseDrop, drop_items
+from statistics import mean
 
 
 # 常规直线射弹
@@ -388,7 +389,10 @@ clock = pygame.time.Clock()
 # setting the pygame font style(1st parameter)
 # and size of font(2nd parameter)
 Font = pygame.font.SysFont("timesnewroman", 30)
-
+try:
+    Font = pygame.font.SysFont("得意黑斜体", 30)
+except:
+    Font = pygame.font.SysFont("timesnewroman", 30)
 # 时间线
 # 之后改用SQL
 timeline = {
@@ -398,17 +402,19 @@ timeline = {
 
 running = True
 
-smooth_fps = 60
+smooth_fps = [60] * 60
 
 # 主体
 while running:
     # 决定游戏刷新率
     clock.tick(FPS)
     delay = int(1000 / clock.get_time())
-    smooth_fps = int(round((smooth_fps * 10 + delay) / 11))
+    smooth_fps = [delay] + smooth_fps
+    smooth_fps.pop()
+    real_fps = round(mean(smooth_fps))
     Info1 = Font.render("YOU WIN!!", False, Red, White)
     Info2 = Font.render("NO BOOM!", False, Black, White)
-    Info3 = Font.render(str(smooth_fps), False, Black, None)
+    Info3 = Font.render(str(real_fps), False, Black, None)
     if player.bomb > 0 and pygame.time.get_ticks() - player.last_bomb >= 3000:
         Info2 = Font.render("BOOM!", False, Black, White)
     # 点×时退出。。
