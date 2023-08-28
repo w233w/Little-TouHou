@@ -17,7 +17,7 @@ class SnakeBullet(BaseBullet):
         self.x = (WIDTH / (total_num - 1)) * index
         self.speed = speed
 
-    def update(self, player):
+    def update(self):
         curr_time = time.get_ticks()
         time_pass = curr_time - self.ini_time
         del_x = math.sin(2 * math.pi * time_pass / (1000 * self.speed))
@@ -25,6 +25,3 @@ class SnakeBullet(BaseBullet):
         del_v = Vector2(del_x, del_y)
         self.pos += del_v
         self.rect.center = self.pos
-        if player.sprite.is_bomb:
-            if self.pos.distance_to(player.sprite.pos) < 500:
-                self.kill()

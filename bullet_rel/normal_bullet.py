@@ -13,7 +13,7 @@ class NormalBullet(BaseBullet):
         self.degree = angle / (total_num - 1) * self.index - angle / 2
         self.radian = math.radians(self.degree)
 
-    def update(self, player):
+    def update(self):
         if self.out_of_bound():
             self.kill()
         del_x = math.sin(self.radian) * 2
@@ -21,9 +21,3 @@ class NormalBullet(BaseBullet):
         del_v = Vector2(del_x, del_y)
         self.pos = self.pos + del_v
         self.rect.center = self.pos
-        if self.pos.distance_to(player.sprite.pos) < 7:
-            player.sprite.hp -= 1
-            self.kill()
-        if player.sprite.is_bomb:
-            if self.pos.distance_to(player.sprite.pos) < 500:
-                self.kill()

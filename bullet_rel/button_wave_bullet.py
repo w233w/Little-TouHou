@@ -21,7 +21,7 @@ class ButtonWave(BaseBullet):
         self.height = height
         self.shift = shift
 
-    def update(self, player):
+    def update(self):
         curr_time = time.get_ticks()
         time_pass = curr_time - self.ini_time
         del_x = self.shift

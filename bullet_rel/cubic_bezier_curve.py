@@ -19,7 +19,7 @@ class CubicBezierCurve(BaseBullet):
             self.p3 = Vector2(300 + 70 * index, 200 - 30 * index)
         self.p4 = Vector2(player.sprite.pos)
 
-    def update(self, player):
+    def update(self):
         curr_time = time.get_ticks()
         time_pass = curr_time - self.ini_time
         t = time_pass / 3000
@@ -31,9 +31,3 @@ class CubicBezierCurve(BaseBullet):
         self.rect.center = pos
         if self.out_of_bound():
             self.kill()
-        if pos.distance_to(player.sprite.pos) < 7:
-            player.sprite.hp -= 1
-            self.kill()
-        if player.sprite.is_bomb:
-            if pos.distance_to(player.sprite.pos) < 500:
-                self.kill()

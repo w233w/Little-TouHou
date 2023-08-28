@@ -143,7 +143,7 @@ while running := True:
     # 永远先更新玩家
     player.update()
     player_re.update()
-    bullets.update(player)
+    bullets.update()
     enemys.update()
     player_ammo.update()
     drop_items.update(player_pos=player.sprite.pos)  # 所有drop_item只有一个入参，即玩家位置

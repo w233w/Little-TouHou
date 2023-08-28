@@ -1,7 +1,7 @@
 import pygame
 from player_rel.player_shot import PlayerShot
 from utils.const import *
-from group_controller import drop_items, player_ammo
+from group_controller import drop_items, player_ammo, bullets
 
 
 class Player(pygame.sprite.Sprite):
@@ -52,12 +52,18 @@ class Player(pygame.sprite.Sprite):
         return shift * pygame.Vector2(del_x, del_y)
 
     def update(self):
+        # bomb会消掉所有屏幕上的子弹
+        if self.is_bomb:  # 顺序不能变
+            all_bullets = bullets.sprites()
+            bullets.empty()
+            del all_bullets[:]
         # boom只有一帧，update前先结束掉
         self.is_bomb = False
         # 死亡判定
         if self.hp <= 0:
             # TODO change death behavior
-            self.kill()
+            # self.kill()
+            self.image.fill(BackgroundColor)
             return
         # 吃道具判定
         collided_items = pygame.sprite.spritecollide(
@@ -70,6 +76,12 @@ class Player(pygame.sprite.Sprite):
                 self.hp += 1
             elif item.type == "bomb":
                 self.bomb += 1
+        # 中弹判定
+        collided_bullets = pygame.sprite.spritecollide(
+            self, bullets, True, pygame.sprite.collide_mask
+        )
+        self.hp -= len(collided_bullets)
+        del collided_bullets[:]
         # 攻击力不会大于五
         if self.power > 5:
             self.power = 5

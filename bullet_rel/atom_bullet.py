@@ -14,17 +14,11 @@ class AtomBullet(BaseBullet):
         self.group = group
         self.degree = 360 / total_num * self.index
 
-    def update(self, player):
+    def update(self):
         self.degree += 2 + self.group * 2
         radian = math.radians(self.degree)
         del_x = math.sin(radian) * 2
         del_y = math.cos(radian) * 2
         del_v = Vector2(del_x, del_y)
         self.pos += del_v
-        if self.pos.distance_to(player.sprite.pos) < 7:
-            player.sprite.hp -= 1
-            self.kill()
-        if player.sprite.is_bomb:
-            if self.pos.distance_to(player.sprite.pos) < 500:
-                self.kill()
         self.rect.center = self.pos

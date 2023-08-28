@@ -14,7 +14,7 @@ class EllipseBullet(BaseBullet):
         self.radius = radius
         self.radian = math.radians(360 / total_num * self.index)
 
-    def update(self, player):
+    def update(self):
         curr_time = time.get_ticks()
         time_pass = curr_time - self.ini_time
         # 计算动圆相对于原点的半径
@@ -46,9 +46,3 @@ class EllipseBullet(BaseBullet):
         bullet_pos = Vector2(bullets_pos_x, bullets_pos_y)
 
         self.rect.center = bullet_pos
-        if self.pos.distance_to(player.sprite.pos) < 7:
-            player.sprite.hp -= 1
-            self.kill()
-        if player.sprite.is_bomb:
-            if self.pos.distance_to(player.sprite.pos) < 500:
-                self.kill()
