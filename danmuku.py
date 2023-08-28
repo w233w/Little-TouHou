@@ -32,7 +32,7 @@ def draw_hp_bar(pos, angle):
 
 
 # 绘制血量图像
-class Heart(pygame.sprite.Sprite):
+class HeartImage(pygame.sprite.Sprite):
     def __init__(self, index):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.image.load("./images/heart.png")
@@ -46,7 +46,7 @@ class Heart(pygame.sprite.Sprite):
 
 
 # 绘制大招图像
-class Bomb(pygame.sprite.Sprite):
+class BombImage(pygame.sprite.Sprite):
     def __init__(self, index):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.image.load("./images/bomb.png")
@@ -62,17 +62,11 @@ class Bomb(pygame.sprite.Sprite):
 # 创造玩家相关内容
 player.add(Player())
 for i in range(player.sprite.hp):
-    hp = Heart(i)
+    hp = HeartImage(i)
     player_re.add(hp)
 for i in range(player.sprite.bomb):
-    boom = Bomb(i)
+    boom = BombImage(i)
     player_re.add(boom)
-
-for i in range(1000):
-    ButtonWave(None, 100, i, 1, -1, bullets)
-
-for i in range(6):
-    EllipseBullet(Vector2(200, 200), 6, i, 100, bullets)
 
 
 # Init pygame & Crate screen
@@ -83,7 +77,6 @@ clock = pygame.time.Clock()
 # 状态栏
 # setting the pygame font style(1st parameter)
 # and size of font(2nd parameter)
-Font = pygame.font.SysFont("timesnewroman", 30)
 try:
     Font = pygame.font.SysFont("得意黑斜体", 30)
 except:
