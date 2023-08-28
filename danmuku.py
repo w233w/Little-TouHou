@@ -1,12 +1,10 @@
 import pygame
 import math
 from pygame import Vector2
-from pygame.sprite import Group
 from utils.const import *
 from player_rel import Player
-from bullet_rel import NormalBullet, EllipseBullet, CubicBezierCurve, ButtonWave
-from enemy_rel import BaseEnemy
-from drop_rel import PowerDrop
+from bullet_rel import EllipseBullet, ButtonWave
+from enemy_rel import BezierEnemy, NormalEnemy
 from statistics import mean
 from group_controller import *
 
@@ -31,57 +29,6 @@ def draw_hp_bar(pos, angle):
     # Draw
     if len(p) > 2:
         pygame.draw.polygon(screen, Red, p)
-
-
-# 一号敌人
-# 会不断发射两颗贝塞尔曲线弹幕
-class Enemy_1(BaseEnemy):
-    def __init__(self, pos: Vector2, max_hp: int, *groups: Group) -> None:
-        super().__init__(pos, max_hp, *groups)
-        self.image = pygame.image.load("./images/enemy_1.png")
-        self.mask = pygame.mask.from_surface(self.image)
-        self.rect = self.image.get_rect(center=self.pos)
-
-    def update(self):
-        if self.pos[1] < 200:
-            self.pos += Vector2(0, 1)
-        self.rect.center = self.pos
-        curr_time = pygame.time.get_ticks()
-        time_pass = curr_time - self.last_shot
-        if time_pass / 1000 >= 1:
-            self.last_shot = curr_time
-            for i in range(1):
-                for j in range(1):
-                    CubicBezierCurve(self.pos, "l", i, j, bullets)
-                    CubicBezierCurve(self.pos, "r", i, j, bullets)
-        self.on_hit(player_ammo)
-        if self.hp <= 0:
-            self.kill()
-
-
-# 二号敌人
-# 会不断发射4颗普通子弹
-class Enemy_2(BaseEnemy):
-    def __init__(self, pos: Vector2, max_hp: int, *groups: Group) -> None:
-        super().__init__(pos, max_hp, *groups)
-        self.image = pygame.image.load("./images/enemy_2.png")
-        self.mask = pygame.mask.from_surface(self.image)
-        self.rect = self.image.get_rect(center=self.pos)
-
-    def update(self):
-        if self.pos[1] < 100:
-            self.pos += Vector2(0, 1)
-        self.rect.center = self.pos
-        curr_time = pygame.time.get_ticks()
-        time_pass = curr_time - self.last_shot
-        if time_pass >= 1000:
-            self.last_shot = curr_time
-            for i in range(4):
-                NormalBullet(self.pos, 4, i, 30, bullets)
-        self.on_hit(player_ammo)
-        if self.hp <= 0:
-            PowerDrop(self.pos, drop_items)
-            self.kill()
 
 
 # 绘制血量图像
@@ -142,18 +89,16 @@ try:
 except:
     Font = pygame.font.SysFont("timesnewroman", 30)
 # 时间线
-# 之后改用SQL
+# TODO 之后改用外部数据结构如JSON，SQL等。
 timeline = {
     "wave1": {"time": 3000, "done": False},
     "wave2": {"time": 15000, "done": False},
 }
 
-running = True
-
 smooth_fps = [60] * 60
 
 # 主体
-while running:
+while running := True:
     # 决定游戏刷新率
     clock.tick(FPS)
     delay = 1000 / clock.get_time()
@@ -180,9 +125,9 @@ while running:
         and timeline["wave1"]["done"] == False
     ):
         for i in range(3):
-            Enemy_1(Vector2(100 + 100 * i, 0), 20, enemys)
+            BezierEnemy(Vector2(100 + 100 * i, 0), 20, enemys)
         for i in range(2):
-            Enemy_2(Vector2(150 + 100 * i, 0), 10, enemys)
+            NormalEnemy(Vector2(150 + 100 * i, 0), 10, enemys)
         timeline["wave1"]["done"] = True
     # 2
     if (
@@ -190,9 +135,9 @@ while running:
         and timeline["wave2"]["done"] == False
     ):
         for i in range(3):
-            Enemy_1(Vector2(125 + 100 * i, 0), 20, enemys)
+            BezierEnemy(Vector2(125 + 100 * i, 0), 20, enemys)
         for i in range(2):
-            Enemy_2(Vector2(175 + 100 * i, 0), 10, enemys)
+            NormalEnemy(Vector2(175 + 100 * i, 0), 10, enemys)
         timeline["wave2"]["done"] = True
 
     # 先铺背景再画sprites
