@@ -22,5 +22,5 @@ class PlayerShot(sprite.Sprite):
     def update(self):
         self.pos += Vector2(0, -4)  # 子弹速度
         self.rect.center = self.pos
-        if (self.pos.y) < -1:  # 离开屏幕后不再更新位置
+        if (self.pos.y) < -5:  # 离开屏幕后不再更新位置
             self.kill()

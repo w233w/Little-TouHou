@@ -29,5 +29,5 @@ class CubicBezierCurve(BaseBullet):
         sec4 = (t**3) * self.p4
         pos = sec1 + sec2 + sec3 + sec4
         self.rect.center = pos
-        if self.out_of_bound():
+        if any(self.out_of_bound()):
             self.kill()

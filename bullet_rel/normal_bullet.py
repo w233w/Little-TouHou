@@ -14,7 +14,7 @@ class NormalBullet(BaseBullet):
         self.radian = math.radians(self.degree)
 
     def update(self):
-        if self.out_of_bound():
+        if any(self.out_of_bound()):
             self.kill()
         del_x = math.sin(self.radian) * 2
         del_y = math.cos(self.radian) * 2
