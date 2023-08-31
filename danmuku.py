@@ -3,7 +3,6 @@ import math
 from pygame import Vector2
 from utils.const import *
 from player_rel import Player
-from bullet_rel import EllipseBullet, ButtonWave
 from enemy_rel import BezierEnemy, NormalEnemy
 from statistics import mean
 from group_controller import *
@@ -100,7 +99,7 @@ while running := True:
     real_fps = round(mean(smooth_fps))
     Info1 = Font.render("YOU WIN!!", False, Red, White)
     Info2 = Font.render("NO BOOM!", False, Black, White)
-    Info3 = Font.render(str(real_fps), False, Black, None)
+    Info3 = Font.render(f"FPS: {real_fps}", False, Black, None)
     if (
         player.sprite.bomb > 0
         and pygame.time.get_ticks() - player.sprite.last_bomb >= 3000
@@ -138,7 +137,7 @@ while running := True:
     if len(enemys.sprites()) == 0 and pygame.time.get_ticks() > 5000:
         screen.blit(Info1, (100, 0))
     screen.blit(Info2, (260, 0))
-    screen.blit(Info3, (340, 50))
+    screen.blit(Info3, (310, 50))
     # 更新sprites
     # 永远先更新玩家
     player.update()
