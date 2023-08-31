@@ -17,10 +17,13 @@ class BaseEnemy(sprite.Sprite):
         if sprite.spritecollide(self, op, False, sprite.collide_mask):
             self.kill()
 
-    def on_hit(self, player_ammo):
+    def on_hit(self, player_ammo, defence: int = 0):
         collide_sprites: list[PlayerShot] = sprite.spritecollide(
             self, player_ammo, True, sprite.collide_mask
         )
         for ammo in collide_sprites:
-            self.hp -= ammo.power
+            self.hp -= max(0, ammo.power - defence)
         del collide_sprites[:]
+
+    def on_time(self):
+        self.hp -= 1
