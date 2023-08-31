@@ -40,14 +40,8 @@ while running := True:
     smooth_fps.append(delay)
     smooth_fps.pop(0)
     real_fps = round(mean(smooth_fps))
-    Info1 = Font.render("YOU WIN!!", False, Red, White)
-    Info2 = Font.render("NO BOOM!", False, Black, White)
-    Info3 = Font.render(f"FPS: {real_fps}", False, Black, None)
-    if (
-        player.sprite.bomb > 0
-        and pygame.time.get_ticks() - player.sprite.last_bomb >= 3000
-    ):
-        Info2 = Font.render("BOOM!", False, Black, White)
+    win_info = Font.render("YOU WIN!!", False, Red, White)
+    fps_text = Font.render(f"FPS: {real_fps}", False, Black, None)
     # 点×时退出。。
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -68,13 +62,12 @@ while running := True:
                         Vector2(pos_x + inter_x * i, pos_y + inter_y * i), hp, enemys
                     )
             timeline.pop(0)
+    else:
+        screen.blit(win_info, (100, 0))
 
     # 先铺背景再画sprites
     screen.fill(pygame.Color(BackgroundColor))
-    if len(enemys.sprites()) == 0 and pygame.time.get_ticks() > 5000:
-        screen.blit(Info1, (100, 0))
-    screen.blit(Info2, (260, 0))
-    screen.blit(Info3, (310, 50))
+    screen.blit(fps_text, (310, 50))
     # 更新sprites
     # 永远先更新玩家
     player.update()
