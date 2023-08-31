@@ -4,6 +4,7 @@ import pygame.time
 from utils.const import *
 
 
+# 敌机子弹类的基类，注意这个类每个实例一般表示一个子弹的实体。
 class BaseBullet(Sprite):
     def __init__(self, pos: Vector2, *groups: Group) -> None:
         super().__init__(*groups)

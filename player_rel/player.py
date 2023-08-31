@@ -103,7 +103,7 @@ class Player(pygame.sprite.Sprite):
         ):
             self.last_shoot = current_time
             # 根据power射出多个子弹，每两点攻击力加一颗子弹， 最多三个子弹
-            ammo_num = (self.power + 1) // 2
+            ammo_num = int((self.power + 1) // 2)
             for i in range(ammo_num):
                 PlayerShot(self.power, i, self.pos, player_ammo)
         # 检测是否可以boom，并在可以时激活
