@@ -7,22 +7,22 @@ from group_controller import drop_items, player_ammo, bullets, player_re
 class Player(pygame.sprite.Sprite):
     def __init__(self, *groups: pygame.sprite.Group):
         pygame.sprite.Sprite.__init__(self, *groups)
-        self.image = pygame.image.load("./images/player.png")
-        self.mask = pygame.mask.from_surface(self.image)
-        self.pos = pygame.Vector2(200, 560)
-        self.rect = self.image.get_rect(center=self.pos)
+        self.image: pygame.Surface = pygame.image.load("./images/player.png")
+        self.mask: pygame.Mask = pygame.mask.from_surface(self.image)
+        self.pos: pygame.Vector2 = pygame.Vector2(200, 560)
+        self.rect: pygame.Rect = self.image.get_rect(center=self.pos)
 
-        self.hp = 6  # 血量
+        self.hp: int = 6  # 血量
 
-        self.last_shoot = 0  # 用于两条用于计算射击间隔
-        self.shoot_interval = 200  # ms
+        self.last_shoot: int = 0  # 用于两条用于计算射击间隔
+        self.shoot_interval: int = 200  # ms
 
-        self.last_bomb = 0  # 以下四条用于玩家的消弹技能
-        self.bomb = 3
-        self.is_bomb = False
-        self.bomb_interval = 3000  # ms
+        self.last_bomb: int = 0  # 以下四条用于玩家的消弹技能
+        self.bomb: int = 3
+        self.is_bomb: bool = False
+        self.bomb_interval: int = 3000  # ms
 
-        self.power = 3  # 攻击力
+        self.power: int = 3  # 攻击力
 
         for i in range(self.hp):
             HeartImage(i, self, player_re)
@@ -78,8 +78,10 @@ class Player(pygame.sprite.Sprite):
             if item.type == "energy":
                 self.power += 0.5
             elif item.type == "hp":
+                HeartImage(self.hp, self, player_re)
                 self.hp += 1
             elif item.type == "bomb":
+                BombImage(self.hp, self, player_re)
                 self.bomb += 1
         # 中弹判定
         collided_bullets = pygame.sprite.spritecollide(
@@ -93,15 +95,15 @@ class Player(pygame.sprite.Sprite):
         # 移动
         self.pos += self._player_control()
         self.rect.center = self.pos
-        current_time = pygame.time.get_ticks()
         # 根据间隔检测是否能打出子弹
+        current_time = pygame.time.get_ticks()
         if (
             pygame.key.get_pressed()[pygame.K_z] == 1
             and current_time - self.last_shoot >= self.shoot_interval
         ):
             self.last_shoot = current_time
             # 根据power射出多个子弹，每两点攻击力加一颗子弹， 最多三个子弹
-            ammo_num = int((self.power + 1) // 2)
+            ammo_num = (self.power + 1) // 2
             for i in range(ammo_num):
                 PlayerShot(self.power, i, self.pos, player_ammo)
         # 检测是否可以boom，并在可以时激活
