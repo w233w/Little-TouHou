@@ -1,5 +1,6 @@
 import pygame
 import math
+import json
 from pygame import Vector2
 from utils.const import *
 from player_rel import Player
@@ -81,11 +82,9 @@ try:
 except:
     Font = pygame.font.SysFont("timesnewroman", 30)
 # 时间线
-# TODO 之后改用外部数据结构如JSON，SQL等。
-timeline = {
-    "wave1": {"time": 3000, "done": False},
-    "wave2": {"time": 15000, "done": False},
-}
+with open("./utils/timeline.json") as f:
+    text = "".join(f.readlines())
+    timeline = json.loads(text)
 
 smooth_fps = [60] * 60
 
@@ -111,26 +110,18 @@ while running := True:
             pygame.quit()
             exit()
     # 根据时间线创建敌人波次
-    # 第一波
-    if (
-        pygame.time.get_ticks() > timeline["wave1"]["time"]
-        and timeline["wave1"]["done"] == False
-    ):
-        for i in range(3):
-            BezierEnemy(Vector2(100 + 100 * i, 0), 20, enemys)
-        for i in range(2):
-            NormalEnemy(Vector2(150 + 100 * i, 0), 10, enemys)
-        timeline["wave1"]["done"] = True
-    # 2
-    if (
-        pygame.time.get_ticks() > timeline["wave2"]["time"]
-        and timeline["wave2"]["done"] == False
-    ):
-        for i in range(3):
-            BezierEnemy(Vector2(125 + 100 * i, 0), 20, enemys)
-        for i in range(2):
-            NormalEnemy(Vector2(175 + 100 * i, 0), 10, enemys)
-        timeline["wave2"]["done"] = True
+    if timeline:
+        next_wave = timeline[0]
+        if pygame.time.get_ticks() >= next_wave["time"]:
+            wave_enemys = next_wave["enemys"]
+            for enemy_name, enemy_prop in wave_enemys.items():
+                for i in range(enemy_prop["num"]):
+                    pos_x, pos_y = enemy_prop["pos"]
+                    inter_x, inter_y = enemy_prop["interval"]
+                    hp = enemy_prop["hp"]
+                    command = f"{enemy_name}(Vector2({pos_x} + {inter_x} * i, {enemy_prop['pos'][1]} + {enemy_prop['interval'][1]} * {i}), {hp}, enemys)"
+                    exec(command)
+            timeline.pop(0)
 
     # 先铺背景再画sprites
     screen.fill(pygame.Color(BackgroundColor))
