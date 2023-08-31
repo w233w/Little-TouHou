@@ -4,7 +4,7 @@ import json
 from pygame import Vector2
 from utils.const import *
 from player_rel import Player
-from enemy_rel import BezierEnemy, NormalEnemy
+from enemy_rel import BezierEnemy, NormalEnemy  #  有用，详见124行
 from statistics import mean
 from group_controller import *
 
@@ -119,8 +119,10 @@ while running := True:
                     pos_x, pos_y = enemy_prop["pos"]
                     inter_x, inter_y = enemy_prop["interval"]
                     hp = enemy_prop["hp"]
-                    command = f"{enemy_name}(Vector2({pos_x} + {inter_x} * i, {enemy_prop['pos'][1]} + {enemy_prop['interval'][1]} * {i}), {hp}, enemys)"
-                    exec(command)
+                    spawning_enemy_class = globals()[enemy_name]
+                    spawning_enemy_class(
+                        Vector2(pos_x + inter_x * i, pos_y + inter_y * i), hp, enemys
+                    )
             timeline.pop(0)
 
     # 先铺背景再画sprites
