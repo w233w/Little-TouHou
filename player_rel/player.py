@@ -1,7 +1,7 @@
 import pygame
 from player_rel.player_shot import PlayerShot
 from utils.const import *
-from group_controller import drop_items, player_ammo, bullets
+from group_controller import drop_items, player_ammo, bullets, player_re
 
 
 class Player(pygame.sprite.Sprite):
@@ -23,6 +23,11 @@ class Player(pygame.sprite.Sprite):
         self.bomb_interval = 3000  # ms
 
         self.power = 3  # 攻击力
+
+        for i in range(self.hp):
+            HeartImage(i, player_re)
+        for i in range(self.bomb):
+            BombImage(i, player_re)
 
     # 自机控制
     # 返回的值决定了速度
@@ -108,3 +113,31 @@ class Player(pygame.sprite.Sprite):
             self.last_bomb = current_time
             self.is_bomb = True
             self.bomb -= 1
+
+
+# 绘制血量图像
+class HeartImage(pygame.sprite.Sprite):
+    def __init__(self, index, *groups: pygame.sprite.Group) -> None:
+        super().__init__(*groups)
+        self.image = pygame.image.load("./images/heart.png")
+        self.index = index
+        self.pos = pygame.Vector2(10 + 20 * index, 10)  # 左上角
+        self.rect = self.image.get_rect(center=self.pos)
+
+    def update(self, player):
+        if self.index >= player.sprite.hp:
+            self.kill()
+
+
+# 绘制大招图像
+class BombImage(pygame.sprite.Sprite):
+    def __init__(self, index, *groups: pygame.sprite.Group) -> None:
+        super().__init__(*groups)
+        self.image = pygame.image.load("./images/bomb.png")
+        self.index = index
+        self.pos = pygame.Vector2(WIDTH - 10 - 20 * index, 10)  # 右上角
+        self.rect = self.image.get_rect(center=self.pos)
+
+    def update(self, player):
+        if self.index >= player.sprite.bomb:
+            self.kill()

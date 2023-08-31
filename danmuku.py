@@ -3,71 +3,15 @@ import math
 import json
 from pygame import Vector2
 from utils.const import *
+from utils.debug import draw_hp_bar
 from player_rel import Player
 from enemy_rel import BezierEnemy, NormalEnemy  #  有用，详见124行
 from statistics import mean
 from group_controller import *
 
 
-# 血条
-# test
-def draw_hp_bar(pos, angle):
-    # Center and (inner)radius of arc
-    cx, cy, r, ir = pos[0], pos[1], 20, 17
-    # Calculate the angle in degrees
-    start = math.radians(135)
-    # Start list of polygon points
-    p = []
-    for n in range(0, angle):
-        x = cx + int(ir * math.cos((angle - n) * math.pi / 180 - start))
-        y = cy + int(ir * math.sin((angle - n) * math.pi / 180 - start))
-        p.append((x, y))
-    for n in range(0, angle):
-        x = cx + int(r * math.cos(n * math.pi / 180 - start))
-        y = cy + int(r * math.sin(n * math.pi / 180 - start))
-        p.append((x, y))
-    # Draw
-    if len(p) > 2:
-        pygame.draw.polygon(screen, Red, p)
-
-
-# 绘制血量图像
-class HeartImage(pygame.sprite.Sprite):
-    def __init__(self, index):
-        pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load("./images/heart.png")
-        self.index = index
-        self.pos = Vector2(10 + 20 * index, 10)  # 左上角
-        self.rect = self.image.get_rect(center=self.pos)
-
-    def update(self):
-        if self.index >= player.sprite.hp:
-            self.kill()
-
-
-# 绘制大招图像
-class BombImage(pygame.sprite.Sprite):
-    def __init__(self, index):
-        pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load("./images/bomb.png")
-        self.index = index
-        self.pos = Vector2(WIDTH - 10 - 20 * index, 10)  # 右上角
-        self.rect = self.image.get_rect(center=self.pos)
-
-    def update(self):
-        if self.index >= player.sprite.bomb:
-            self.kill()
-
-
 # 创造玩家相关内容
 player.add(Player())
-for i in range(player.sprite.hp):
-    hp = HeartImage(i)
-    player_re.add(hp)
-for i in range(player.sprite.bomb):
-    boom = BombImage(i)
-    player_re.add(boom)
-
 
 # Init pygame & Crate screen
 pygame.init()
@@ -134,7 +78,7 @@ while running := True:
     # 更新sprites
     # 永远先更新玩家
     player.update()
-    player_re.update()
+    player_re.update(player)
     bullets.update()
     enemys.update()
     player_ammo.update()
@@ -148,6 +92,6 @@ while running := True:
     drop_items.draw(screen)
     for en in enemys:
         if en.hp < en.max_hp:
-            draw_hp_bar(en.pos, int(90 * en.hp / en.max_hp))
+            draw_hp_bar(screen, en.pos, int(90 * en.hp / en.max_hp))
     # 更新画布
     pygame.display.flip()
