@@ -78,7 +78,7 @@ while running := True:
     # 更新sprites
     # 永远先更新玩家
     player.update()
-    player_re.update(player)
+    player_re.update()
     bullets.update()
     enemys.update()
     player_ammo.update()

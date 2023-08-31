@@ -25,9 +25,9 @@ class Player(pygame.sprite.Sprite):
         self.power = 3  # 攻击力
 
         for i in range(self.hp):
-            HeartImage(i, player_re)
+            HeartImage(i, self, player_re)
         for i in range(self.bomb):
-            BombImage(i, player_re)
+            BombImage(i, self, player_re)
 
     # 自机控制
     # 返回的值决定了速度
@@ -117,27 +117,33 @@ class Player(pygame.sprite.Sprite):
 
 # 绘制血量图像
 class HeartImage(pygame.sprite.Sprite):
-    def __init__(self, index, *groups: pygame.sprite.Group) -> None:
+    def __init__(
+        self, index, bounding_player: Player, *groups: pygame.sprite.Group
+    ) -> None:
         super().__init__(*groups)
         self.image = pygame.image.load("./images/heart.png")
+        self.player = bounding_player
         self.index = index
         self.pos = pygame.Vector2(10 + 20 * index, 10)  # 左上角
         self.rect = self.image.get_rect(center=self.pos)
 
-    def update(self, player):
-        if self.index >= player.sprite.hp:
+    def update(self):
+        if self.index >= self.player.hp:
             self.kill()
 
 
 # 绘制大招图像
 class BombImage(pygame.sprite.Sprite):
-    def __init__(self, index, *groups: pygame.sprite.Group) -> None:
+    def __init__(
+        self, index, bounding_player: Player, *groups: pygame.sprite.Group
+    ) -> None:
         super().__init__(*groups)
         self.image = pygame.image.load("./images/bomb.png")
+        self.player = bounding_player
         self.index = index
         self.pos = pygame.Vector2(WIDTH - 10 - 20 * index, 10)  # 右上角
         self.rect = self.image.get_rect(center=self.pos)
 
-    def update(self, player):
-        if self.index >= player.sprite.bomb:
+    def update(self):
+        if self.index >= self.player.bomb:
             self.kill()
