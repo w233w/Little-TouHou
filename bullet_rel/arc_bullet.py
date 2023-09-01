@@ -11,7 +11,7 @@ class ArcBullet(BaseBullet):
         self,
         init_pos: Vector2,
         center_pos: Vector2,
-        angle_speed: int,
+        angle_speed: float,
         clock_wise: bool,
         *groups: Group,
     ) -> None:

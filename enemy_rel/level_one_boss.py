@@ -13,12 +13,19 @@ class LevelOneBoss(BaseEnemy):
         self.mask = pygame.mask.from_surface(self.image)
         self.rect = self.image.get_rect(center=self.pos)
         self.shot_shift = 0
+        self.stage = 3  # 0:入场，1：普通1，2：普通2，3：时符
 
     def update(self):
+        if self.stage == 3:
+            self.stage_3_action()
+
+    def stage_3_action(self):
         self.on_hit(player_ammo)
+        self.on_time()
         if self.hp <= 0:
             self.kill()
         if pygame.time.get_ticks() - self.last_shot >= 500:
+            print(123)
             radius = 250
             inner_r = 30
             for ang in range(0 + self.shot_shift, 360 + self.shot_shift, 20):
