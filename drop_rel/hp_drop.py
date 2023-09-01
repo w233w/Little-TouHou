@@ -12,10 +12,10 @@ class HPDrop(BaseDrop):
         self.rect = self.image.get_rect(center=self.pos)
         self.type = "hp"
 
-    def update(self, player_pos):
+    def update(self, player):
         if self.below_screen():
             self.kill()
-        self.magnite(player_pos)
+        self.magnite(player)
         del_v = self.speed
         self.pos += del_v
         self.rect.center = self.pos

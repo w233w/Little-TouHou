@@ -32,7 +32,6 @@ class LevelOneBoss(BaseEnemy):
             self.stage_4_action()
 
     def stage_0_action(self):
-        print(self.time_wait)
         self.on_hit(player_ammo, 99999)
         if self.time_wait > 0:
             self.time_wait -= 1000 / 60

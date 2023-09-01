@@ -87,7 +87,7 @@ class Player(pygame.sprite.Sprite):
         collided_bullets = pygame.sprite.spritecollide(
             self, bullets, True, pygame.sprite.collide_mask
         )
-        # self.hp -= len(collided_bullets)
+        self.hp -= len(collided_bullets)
         del collided_bullets[:]
         # 攻击力不会大于五
         if self.power > 5:

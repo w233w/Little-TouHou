@@ -12,7 +12,8 @@ class BaseDrop(sprite.Sprite):
     def below_screen(self):
         return self.pos.y > HEIGHT + 5
 
-    def magnite(self, player_pos):
+    def magnite(self, player):
+        player_pos = player.sprite.pos
         if 1 < self.pos.distance_to(player_pos) < 36:
             self.speed = (player_pos - self.pos).normalize()
         else:

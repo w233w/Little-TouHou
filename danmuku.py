@@ -89,7 +89,7 @@ while running := True:
     bullets.update()
     enemys.update()
     player_ammo.update()
-    drop_items.update(player_pos=player.sprite.pos)  # 所有drop_item只有一个入参，即玩家位置
+    drop_items.update(player)  # 所有drop_item只有一个入参，即玩家位置
     # 不会有重叠，所以画不分先后
     player.draw(screen)
     bullets.draw(screen)
