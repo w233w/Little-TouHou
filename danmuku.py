@@ -5,7 +5,7 @@ from pygame import Vector2
 from utils.const import *
 from utils.debug import draw_hp_bar
 from player_rel import Player
-from enemy_rel import BezierEnemy, NormalEnemy  #  有用，详见124行
+from enemy_rel import BezierEnemy, NormalEnemy, LevelOneBoss  #  有用，详见124行
 from statistics import mean
 from group_controller import *
 
@@ -29,6 +29,7 @@ except:
 with open("./utils/timeline.json") as f:
     text = "".join(f.readlines())
     timeline = json.loads(text)
+last_wave = pygame.time.get_ticks()
 
 smooth_fps = [60] * 60
 
@@ -50,7 +51,10 @@ while running := True:
     # 根据时间线创建敌人波次
     if timeline:
         next_wave = timeline[0]
-        if pygame.time.get_ticks() >= next_wave["time"]:
+        if (
+            not next_wave["boss"]
+            and pygame.time.get_ticks() - next_wave["time"] >= last_wave
+        ):
             wave_enemys = next_wave["enemys"]
             for enemy_name, enemy_prop in wave_enemys.items():
                 for i in range(enemy_prop["num"]):
@@ -62,7 +66,18 @@ while running := True:
                         Vector2(pos_x + inter_x * i, pos_y + inter_y * i), hp, enemys
                     )
             timeline.pop(0)
-    else:
+            last_wave = pygame.time.get_ticks()
+        elif next_wave["boss"] and len(enemys.sprites()) == 0:
+            wave_enemys = next_wave["enemys"]
+            print(next_wave)
+            for enemy_name, enemy_prop in wave_enemys.items():
+                pos_x, pos_y = enemy_prop["pos"]
+                time_wait = next_wave["time"]
+                spawning_enemy_class = globals()[enemy_name]
+                spawning_enemy_class(Vector2(pos_x, pos_y), None, time_wait, enemys)
+            timeline.pop(0)
+            last_wave = pygame.time.get_ticks()
+    elif len(enemys.sprites()) == 0:
         screen.blit(win_info, (100, 0))
 
     # 先铺背景再画sprites

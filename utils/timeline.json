@@ -1,6 +1,7 @@
 [
     {
         "time": 3000,
+        "boss": false,
         "enemys": {
             "BezierEnemy": {
                 "num": 3,
@@ -29,7 +30,8 @@
         }
     },
     {
-        "time": 15000,
+        "time": 12000,
+        "boss": false,
         "enemys": {
             "BezierEnemy": {
                 "num": 3,
@@ -53,6 +55,18 @@
                 "interval": [
                     100,
                     0
+                ]
+            }
+        }
+    },
+    {
+        "time": 3000,
+        "boss": true,
+        "enemys": {
+            "LevelOneBoss": {
+                "pos": [
+                    200,
+                    -10
                 ]
             }
         }

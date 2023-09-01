@@ -7,15 +7,16 @@ from group_controller import bullets, player_ammo
 
 
 class LevelOneBoss(BaseEnemy):
-    def __init__(self, pos: Vector2, *groups: Group) -> None:
+    def __init__(self, pos: Vector2, hp: float, time_wait: int, *groups: Group) -> None:
         super().__init__(
-            pos, max_hp=1, *groups
+            pos, 1, *groups
         )  #  Boss always start with 1 hp, it will change/refill between stages
         self.image = pygame.image.load("./images/enemy_1.png")
         self.mask = pygame.mask.from_surface(self.image)
         self.rect = self.image.get_rect(center=self.pos)
+        self.time_wait = time_wait
         self.shot_shift = 0
-        self.stage = 0  # 0:入场，1：普通1，2：普通2，3：时符
+        self.stage = 0
         self.stage_2_flag = 0
 
     def update(self):
@@ -31,8 +32,11 @@ class LevelOneBoss(BaseEnemy):
             self.stage_4_action()
 
     def stage_0_action(self):
+        print(self.time_wait)
         self.on_hit(player_ammo, 99999)
-        if self.pos.y < 200:
+        if self.time_wait > 0:
+            self.time_wait -= 1000 / 60
+        elif self.pos.y < 200:
             self.pos += Vector2(0, 1)
             self.rect.center = self.pos
         else:
