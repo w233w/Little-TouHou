@@ -25,5 +25,5 @@ class BaseEnemy(sprite.Sprite):
             self.hp -= max(0, ammo.power - defence)
         del collide_sprites[:]
 
-    def on_time(self):
-        self.hp -= 1
+    def on_time(self, lose: int):
+        self.hp -= lose
