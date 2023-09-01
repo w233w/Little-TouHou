@@ -69,7 +69,6 @@ while running := True:
             last_wave = pygame.time.get_ticks()
         elif next_wave["boss"] and len(enemys.sprites()) == 0:
             wave_enemys = next_wave["enemys"]
-            print(next_wave)
             for enemy_name, enemy_prop in wave_enemys.items():
                 pos_x, pos_y = enemy_prop["pos"]
                 time_wait = next_wave["time"]
