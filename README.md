@@ -16,12 +16,16 @@ python danmuku.py
 
 - Hold Z to shot
 - Hold Shift to speed up
-- Press X to use the bomb (Noticing there is 1 second between two bomb uses)
+- Press X to use the bomb (Noticing there is 3 second between two bomb uses)
 - Hold the arrow key to move
 
 You can find your HP on the upper left and bombs on the upper right.
 
-Every single enemy's bullet will cause 1 HP lost. There is no interval between two incoming damages, so if you are hitting by X enemy bullets together, you lose X HP instantly.
+You lost when you have not HP.
+
+Bomb can remove all bullets on screen.
+
+Every time you get hit, you will lose 1 HP and trigger a significent smaller bomb that clear near by bullets.
 
 ## On Going
 

@@ -56,12 +56,23 @@ class Player(pygame.sprite.Sprite):
             self.pos.y = HEIGHT - 5
         return shift * pygame.Vector2(del_x, del_y)
 
-    def update(self):
-        # bomb会消掉所有屏幕上的子弹
-        if self.is_bomb:  # 顺序不能变
+    def use_bomb(self, bomb_radius):
+        if bomb_radius == -1:
             all_bullets = bullets.sprites()
             bullets.empty()
             del all_bullets[:]
+        else:
+            pygame.sprite.spritecollide(
+                BombEffect(self.pos, bomb_radius),
+                bullets,
+                True,
+                pygame.sprite.collide_mask,
+            )
+
+    def update(self):
+        # bomb会消掉所有屏幕上的子弹
+        if self.is_bomb:  # 顺序不能变
+            self.use_bomb(-1)
         # boom只有一帧，update前先结束掉
         self.is_bomb = False
         # 死亡判定
@@ -87,7 +98,9 @@ class Player(pygame.sprite.Sprite):
         collided_bullets = pygame.sprite.spritecollide(
             self, bullets, True, pygame.sprite.collide_mask
         )
-        self.hp -= len(collided_bullets)
+        if len(collided_bullets) > 0:
+            self.hp -= 1
+            self.use_bomb(100)
         del collided_bullets[:]
         # 攻击力不会大于五
         if self.power > 5:
@@ -149,3 +162,16 @@ class BombImage(pygame.sprite.Sprite):
     def update(self):
         if self.index >= self.player.bomb:
             self.kill()
+
+
+class BombEffect(pygame.sprite.Sprite):
+    def __init__(self, pos, bomb_radius) -> None:
+        super().__init__()
+        self.bomb_radius = bomb_radius
+        self.image = pygame.Surface((2 * bomb_radius, 2 * bomb_radius))
+        self.image.set_colorkey(Black)
+        self.rect = self.image.get_rect(center=pos)
+        self.pos = pos
+        bomb_center = pygame.Vector2(bomb_radius, bomb_radius)
+        pygame.draw.circle(self.image, Red, bomb_center, bomb_radius)
+        self.mask = pygame.mask.from_surface(self.image)

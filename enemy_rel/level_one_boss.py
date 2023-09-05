@@ -4,6 +4,7 @@ from pygame.sprite import Group
 from .base_enemy import BaseEnemy
 from bullet_rel import ArcBullet, NormalBullet
 from group_controller import bullets, player_ammo
+from utils.const import *
 
 
 class LevelOneBoss(BaseEnemy):
@@ -44,7 +45,7 @@ class LevelOneBoss(BaseEnemy):
     def stage_1_action(self):
         self.max_hp = 120
         if self.hp < self.max_hp:
-            self.hp += 2
+            self.hp += self.max_hp / FPS
         else:
             self.stage += 1
             self.last_shot = pygame.time.get_ticks()
@@ -61,9 +62,9 @@ class LevelOneBoss(BaseEnemy):
             self.last_shot = pygame.time.get_ticks()
 
     def stage_3_action(self):
-        self.max_hp = 600
+        self.max_hp = 1200
         if self.hp < self.max_hp:
-            self.hp += 10
+            self.hp += self.max_hp / FPS
         else:
             self.stage += 1
             self.last_shot = pygame.time.get_ticks()
@@ -73,7 +74,7 @@ class LevelOneBoss(BaseEnemy):
         self.on_time(1)
         if self.hp <= 0:
             self.kill()
-        if pygame.time.get_ticks() - self.last_shot >= 500:
+        if pygame.time.get_ticks() - self.last_shot >= 400:
             radius = 250
             inner_r = 30
             for ang in range(0 + self.shot_shift, 360 + self.shot_shift, 20):
