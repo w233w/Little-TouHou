@@ -63,6 +63,10 @@ while running := True:
     elif state == 1:
         if player.sprite.hp <= 0:
             state = 2
+        # 先铺背景
+        screen.fill(pygame.Color(BackgroundColor))
+        screen.blit(fps_text, (310, 50))
+
         # 根据时间线创建敌人波次
         if timeline:
             next_wave = timeline[0]
@@ -94,7 +98,7 @@ while running := True:
                 timeline.pop(0)
                 last_wave = pygame.time.get_ticks()
         elif len(enemys.sprites()) == 0:
-            screen.blit(win_info, (100, 0))
+            screen.blit(win_info, (200, 100))
             if pygame.mouse.get_pressed(num_buttons=3)[0]:
                 # 时间线
                 with open("./utils/timeline.json") as f:
@@ -103,9 +107,6 @@ while running := True:
                 last_wave = pygame.time.get_ticks()  # start from 0
                 state = 0
 
-        # 先铺背景再画sprites
-        screen.fill(pygame.Color(BackgroundColor))
-        screen.blit(fps_text, (310, 50))
         # 更新sprites
         # 永远先更新玩家
         player.update()
