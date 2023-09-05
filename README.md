@@ -21,11 +21,9 @@ python danmuku.py
 
 You can find your HP on the upper left and bombs on the upper right.
 
-You lost when you have not HP.
+The bomb can remove all bullets on the screen.
 
-Bomb can remove all bullets on screen.
-
-Every time you get hit, you will lose 1 HP and trigger a significent smaller bomb that clear near by bullets.
+Every time you get hit, you lose 1 HP and trigger a significantly smaller bomb that clears only nearby bullets.
 
 ## On Going
 
@@ -33,4 +31,4 @@ Every time you get hit, you will lose 1 HP and trigger a significent smaller bom
 
 ## TODO
 
-- Currently, only 11 enemies will come in 3 waves; You win if you kill them all. Plan to add more content.
+- Plan to add more content. Currently, Only 11 enemies will come in 3 waves; You win if you kill them all.
