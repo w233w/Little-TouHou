@@ -125,7 +125,7 @@ while running := True:
             if en.hp < en.max_hp:
                 draw_hp_bar(screen, en.pos, int(90 * en.hp / en.max_hp), Red)
     elif state == 2:
-        screen.fill(pygame.Color(BackgroundColor))
+        # screen.fill(pygame.Color(BackgroundColor))
         screen.blit(lose_info, (180, 50))
         screen.blit(restart_info, (120, 400))
         if pygame.mouse.get_pressed(num_buttons=3)[0]:
