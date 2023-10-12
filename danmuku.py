@@ -1,11 +1,10 @@
 import pygame
-import math
 import json
 from pygame import Vector2
 from utils.const import *
 from utils.debug import draw_hp_bar
 from player_rel import Player
-from enemy_rel import BezierEnemy, NormalEnemy, LevelOneBoss  #  有用，详见124行
+from enemy_rel import *
 from statistics import mean
 from group_controller import *
 
@@ -124,7 +123,7 @@ while running := True:
         drop_items.draw(screen)
         for en in enemys:
             if en.hp < en.max_hp:
-                draw_hp_bar(screen, en.pos, int(90 * en.hp / en.max_hp))
+                draw_hp_bar(screen, en.pos, int(90 * en.hp / en.max_hp), Red)
     elif state == 2:
         screen.fill(pygame.Color(BackgroundColor))
         screen.blit(lose_info, (180, 50))

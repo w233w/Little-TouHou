@@ -5,7 +5,7 @@ from pygame import draw
 
 # 血条
 # test
-def draw_hp_bar(screen, pos, angle):
+def draw_hp_bar(screen, pos, angle, color):
     # Center and (inner)radius of arc
     cx, cy, r, ir = pos[0], pos[1], 20, 17
     # Calculate the angle in degrees
@@ -22,4 +22,4 @@ def draw_hp_bar(screen, pos, angle):
         p.append((x, y))
     # Draw
     if len(p) > 2:
-        draw.polygon(screen, Red, p)
+        draw.polygon(screen, color, p)
