@@ -15,7 +15,7 @@ class PowerDrop(BaseDrop):
     def update(self, player):
         if self.below_screen():
             self.kill()
-        self.magnite(player)
+        self.magnitude(player)
         del_v = self.speed
         self.pos += del_v
         self.rect.center = self.pos

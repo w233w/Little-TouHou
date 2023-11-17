@@ -20,9 +20,9 @@ clock = pygame.time.Clock()
 # 状态栏
 # setting the pygame font style(1st parameter)
 # and size of font(2nd parameter)
-try:
+if "得意黑斜体" in pygame.font.get_fonts():
     Font = pygame.font.SysFont("得意黑斜体", 30)
-except:
+else:
     Font = pygame.font.SysFont("timesnewroman", 30)
 win_info = Font.render("YOU WIN!!", True, Red, None)
 lose_info = Font.render("YOU LOSE", True, Red, None)
@@ -30,9 +30,10 @@ welcome = Font.render("Little-Touhou", True, Red, None)
 start_info = Font.render("Click to start", True, Black, None)
 restart_info = Font.render("Click to restart", True, Black, None)
 
-smooth_fps = [60] * 60
+smooth_fps = [60.0] * 60
 
 state = 0  # 0:开机; 1：游戏中; 2：replay
+last_wave = 0
 
 # 主体
 while running := True:
