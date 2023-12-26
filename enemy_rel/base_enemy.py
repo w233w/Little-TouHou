@@ -2,6 +2,7 @@ from typing import Any
 from pygame import sprite, time, Vector2
 from pygame.sprite import Group
 from player_rel import PlayerShot
+from group_controller import player_ammo
 
 
 class BaseEnemy(sprite.Sprite):
@@ -13,8 +14,9 @@ class BaseEnemy(sprite.Sprite):
         self.max_hp = max_hp
         self.hp = self.max_hp
 
-    def update(self, op: sprite.Group, *args: Any, **kwargs: Any) -> None:  # as dummy
-        if sprite.spritecollide(self, op, False, sprite.collide_mask):
+    def update(self) -> None:  # as dummy
+        self.on_hit(player_ammo)
+        if self.dead:
             self.kill()
 
     def on_hit(self, player_ammo, defence: int = 0):
