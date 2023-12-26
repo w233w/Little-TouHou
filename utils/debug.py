@@ -1,5 +1,4 @@
 import math
-from .const import Red
 from pygame import draw
 
 

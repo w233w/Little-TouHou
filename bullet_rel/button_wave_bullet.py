@@ -26,7 +26,7 @@ class ButtonWave(BaseBullet):
         time_pass = curr_time - self.ini_time
         del_x = self.shift
         del_y = self.height * math.sin(
-            2 * math.pi * time_pass / (1500) + self.index / 3
+            2 * math.pi * time_pass / 1500 + self.index / 3
         )
         del_v = Vector2(del_x, del_y)
         self.pos += del_v

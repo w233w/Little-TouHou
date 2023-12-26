@@ -14,6 +14,9 @@ class BaseEnemy(sprite.Sprite):
         self.max_hp = max_hp
         self.hp = self.max_hp
 
+    def __call__(self, *args, **kwargs):
+        self.__init__(*args, **kwargs)
+
     def update(self) -> None:  # as dummy
         self.on_hit(player_ammo)
         if self.dead:

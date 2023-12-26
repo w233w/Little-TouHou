@@ -1,4 +1,3 @@
-from typing import Any
 from .base_enemy import BaseEnemy
 from group_controller import bullets, player_ammo
 from pygame import Vector2, image, mask, time

@@ -80,7 +80,7 @@ while running := True:
                         pos_x, pos_y = enemy_prop["pos"]
                         inter_x, inter_y = enemy_prop["interval"]
                         hp = enemy_prop["hp"]
-                        spawning_enemy_class = globals()[enemy_name]
+                        spawning_enemy_class: BaseEnemy = globals()[enemy_name]
                         spawning_enemy_class(
                             Vector2(pos_x + inter_x * i, pos_y + inter_y * i),
                             hp,
