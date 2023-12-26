@@ -27,3 +27,7 @@ class BaseEnemy(sprite.Sprite):
 
     def on_time(self, lose: int):
         self.hp -= lose
+
+    @property
+    def dead(self) -> bool:
+        return self.hp <= 0

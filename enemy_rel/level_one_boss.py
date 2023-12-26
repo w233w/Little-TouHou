@@ -8,7 +8,7 @@ from utils.const import *
 
 
 class LevelOneBoss(BaseEnemy):
-    def __init__(self, pos: Vector2, hp: float, time_wait: int, *groups: Group) -> None:
+    def __init__(self, pos: Vector2, time_wait: int, *groups: Group) -> None:
         super().__init__(
             pos, 1, *groups
         )  #  Boss always start with 1 hp, it will change/refill between stages
@@ -17,6 +17,7 @@ class LevelOneBoss(BaseEnemy):
         self.rect = self.image.get_rect(center=self.pos)
         self.time_wait = time_wait
         self.shot_shift = 0
+        self.hp = 0
         self.stage = 0
         self.stage_2_flag = 0
 
@@ -52,12 +53,12 @@ class LevelOneBoss(BaseEnemy):
 
     def stage_2_action(self):
         self.on_hit(player_ammo)
-        if self.hp <= 0:
+        if self.dead:
             self.stage += 1
         if pygame.time.get_ticks() - self.last_shot >= 500:
             num = 5 - self.stage_2_flag
             for i in range(num):
-                NormalBullet(self.pos, num, i, 30, bullets)
+                NormalBullet(self.pos, num, i, 30, 0, bullets)
             self.stage_2_flag = 1 - self.stage_2_flag
             self.last_shot = pygame.time.get_ticks()
 
@@ -72,7 +73,7 @@ class LevelOneBoss(BaseEnemy):
     def stage_4_action(self):
         self.on_hit(player_ammo)
         self.on_time(1)
-        if self.hp <= 0:
+        if self.dead:
             self.kill()
         if pygame.time.get_ticks() - self.last_shot >= 400:
             radius = 250

@@ -28,5 +28,5 @@ class BezierEnemy(BaseEnemy):
                     CubicBezierCurve(self.pos, "l", i, j, bullets)
                     CubicBezierCurve(self.pos, "r", i, j, bullets)
         self.on_hit(player_ammo)
-        if self.hp <= 0:
+        if self.dead:
             self.kill()

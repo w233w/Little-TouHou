@@ -25,8 +25,8 @@ class NormalEnemy(BaseEnemy):
         if time_pass >= 1000:
             self.last_shot = curr_time
             for i in range(4):
-                NormalBullet(self.pos, 4, i, 30, bullets)
+                NormalBullet(self.pos, 4, i, 30, 0, bullets)
         self.on_hit(player_ammo)
-        if self.hp <= 0:
+        if self.dead:
             PowerDrop(self.pos, drop_items)
             self.kill()

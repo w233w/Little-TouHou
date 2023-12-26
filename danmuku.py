@@ -94,7 +94,7 @@ while running := True:
                     pos_x, pos_y = enemy_prop["pos"]
                     time_wait = next_wave["time"]
                     spawning_enemy_class = globals()[enemy_name]
-                    spawning_enemy_class(Vector2(pos_x, pos_y), None, time_wait, enemys)
+                    spawning_enemy_class(Vector2(pos_x, pos_y), time_wait, enemys)
                 timeline.pop(0)
                 last_wave = pygame.time.get_ticks()
         elif len(enemys.sprites()) == 0:
