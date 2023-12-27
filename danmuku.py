@@ -124,7 +124,7 @@ while running := True:
         drop_items.draw(screen)
         for en in enemys:
             if en.hp < en.max_hp:
-                draw_hp_bar(screen, en.pos, int(90 * en.hp / en.max_hp), Red)
+                draw_hp_bar(screen, en.pos, int(90 * en.hp / en.max_hp), en.hp_color)
     elif state == 2:
         # screen.fill(pygame.Color(BackgroundColor))
         screen.blit(lose_info, (180, 50))

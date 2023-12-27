@@ -3,6 +3,7 @@ from pygame import sprite, time, Vector2
 from pygame.sprite import Group
 from player_rel import PlayerShot
 from group_controller import player_ammo
+from utils import const
 
 
 class BaseEnemy(sprite.Sprite):
@@ -13,6 +14,7 @@ class BaseEnemy(sprite.Sprite):
         self.pos = pos
         self.max_hp = max_hp
         self.hp = self.max_hp
+        self.hp_color = const.Red
 
     def __call__(self, *args, **kwargs):
         self.__init__(*args, **kwargs)

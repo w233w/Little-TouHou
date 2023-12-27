@@ -64,6 +64,7 @@ class LevelOneBoss(BaseEnemy):
 
     def stage_3_action(self):
         self.max_hp = 1200
+        self.hp_color = Gray
         if self.hp < self.max_hp:
             self.hp += self.max_hp / FPS
         else:

@@ -13,3 +13,5 @@ BackgroundColor = 255, 229, 204
 Black = 0, 0, 0
 White = 255, 255, 255
 Red = 255, 0, 0
+Yellow = 255, 255, 0
+Gray = 128, 128, 128
