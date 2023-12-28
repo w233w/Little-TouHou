@@ -19,8 +19,8 @@ class RingEnemy(BaseEnemy):
         else:
             curr_time = time.get_ticks()
             time_pass = curr_time - self.last_shot
-            if time_pass >= 2500:
-                self.last_shot = curr_time + 100000000
+            if time_pass >= 4000:
+                self.last_shot = curr_time
                 for i in range(3):
                     AtomBullet(self.pos, 3, i, bullets)
         self.on_hit(player_ammo)
