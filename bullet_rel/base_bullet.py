@@ -16,6 +16,6 @@ class BaseBullet(Sprite):
 
     def out_of_bound(self, img_bound: float = 4.5):
         return (
-            self.rect.x < -img_bound or self.rect.x > WIDTH + img_bound,
-            self.rect.y < -img_bound or self.rect.y > HEIGHT + img_bound,
+            self.pos.x < -img_bound or self.pos.x > WIDTH + img_bound,
+            self.pos.y < -img_bound or self.pos.y > HEIGHT + img_bound,
         )
