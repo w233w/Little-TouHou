@@ -7,3 +7,4 @@ from .snake_bullet import SnakeBullet
 from .button_wave_bullet import ButtonWave
 from .arc_bullet import ArcBullet
 from .bouncing_bullet import BouncingBullet
+from .special_bullets import *
