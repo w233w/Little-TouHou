@@ -12,6 +12,7 @@ class PreciseBullet(Sprite):
         super().__init__(*groups)
         self.route = route
         self.step = 0
+        self.total_step = len(route)
         self.pos = self.route[self.step]
         self.image = image.load("./images/bullet.png")
         self.mask = mask.from_surface(self.image)
@@ -19,5 +20,9 @@ class PreciseBullet(Sprite):
         self.rect = self.image.get_rect(center=self.pos)
 
     def update(self):
-        self.pos = self.route[self.step]
+        try:
+            self.pos = self.route[self.step]
+        except:
+            self.kill()
         self.rect.center = self.pos
+        self.step += 1
