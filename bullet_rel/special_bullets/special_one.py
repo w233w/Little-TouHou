@@ -34,20 +34,16 @@ class SP_one_controller:
     def __init__(self, *groups: Group) -> None:
         self.speed = 100
         self.bullets_route: list[list[Vector2]] = []
-        if groups:
-            self.groups = groups
-        for i in range(7):
-            x1 = np.linspace(30, 400, self.speed, endpoint=False)
-            x2 = np.linspace(400, 800, self.speed, endpoint=False)
-            y1 = __class__.Ks[i] * (x1 - 30) ** 2 + 100
-            y2 = __class__.Ks[i] * (x2 - 30) ** 2 + 100
-            route: list[Vector2] = []
-            for a1 in range(self.speed):
-                route.append(Vector2(x1[a1] % 400, 600 - y1[a1]))
-            for a2 in range(self.speed):
-                route.append(Vector2(x2[a1] % 400, 600 - y2[a1]))
-            route.reverse()
-            print(route)
-            self.bullets_route.append(route)
+        for i in range(40):
+            for j in range(7):
+                x = np.linspace(30 + i * 20, 400 + i * 20, self.speed, endpoint=False)
+                y = __class__.Ks[j] * (x - 50) ** 2 + 100
+                route: list[Vector2] = []
+                for a in range(self.speed):
+                    route.append(Vector2(x[a] % 400, 600 - y[a]))
+                route.reverse()
+                if i == 19 and j == 0:
+                    print(route)
+                self.bullets_route.append(route)
         for b_route in self.bullets_route:
-            PreciseBullet(b_route, self.groups)
+            PreciseBullet(b_route, groups)

@@ -22,7 +22,7 @@ class PreciseBullet(Sprite):
     def update(self):
         try:
             self.pos = self.route[self.step]
+            self.step += 1
         except:
-            self.kill()
+            pass
         self.rect.center = self.pos
-        self.step += 1
