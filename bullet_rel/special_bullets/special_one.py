@@ -33,17 +33,15 @@ class SP_one_controller:
 
     def __init__(self, *groups: Group) -> None:
         self.speed = 100
-        self.bullets_route: list[list[Vector2]] = []
+        self.bullets_route: list[tuple[Vector2]] = []
         for i in range(40):
             for j in range(7):
                 x = np.linspace(30 + i * 20, 400 + i * 20, self.speed, endpoint=False)
-                y = __class__.Ks[j] * (x - 50) ** 2 + 100
+                y = SP_one_controller.Ks[j] * (x - 50) ** 2 + 100
                 route: list[Vector2] = []
                 for a in range(self.speed):
                     route.append(Vector2(x[a] % 400, 600 - y[a]))
                 route.reverse()
-                if i == 19 and j == 0:
-                    print(route)
-                self.bullets_route.append(route)
+                self.bullets_route.append(tuple(route))
         for b_route in self.bullets_route:
-            PreciseBullet(b_route, groups)
+            PreciseBullet(b_route, *groups)

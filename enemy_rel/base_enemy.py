@@ -24,7 +24,7 @@ class BaseEnemy(sprite.Sprite):
         if self.dead:
             self.kill()
 
-    def on_hit(self, player_ammo, defence: int = 0):
+    def on_hit(self, player_ammo: Group, defence: int = 0):
         collide_sprites: list[PlayerShot] = sprite.spritecollide(
             self, player_ammo, True, sprite.collide_mask
         )
