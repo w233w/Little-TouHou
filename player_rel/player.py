@@ -38,7 +38,7 @@ class Player(pygame.sprite.Sprite):
         down = pygame.key.get_pressed()[pygame.K_DOWN]
         right = pygame.key.get_pressed()[pygame.K_RIGHT]
         # 按下shift可以加速，目前是三倍速
-        shift = 1 + 2 * pygame.key.get_pressed()[pygame.K_LSHIFT]
+        shift = 2 + 2 * pygame.key.get_pressed()[pygame.K_LSHIFT]
         del_x = right - left
         del_y = down - up
         # 限制玩家不能离开屏幕

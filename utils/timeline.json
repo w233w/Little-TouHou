@@ -3,48 +3,78 @@
     "time": 3000,
     "boss": false,
     "enemys": {
-      "BezierEnemy": {
-        "num": 3,
-        "hp": 20,
-        "pos": [100, 0],
-        "interval": [100, 0]
-      },
-      "NormalEnemy": {
-        "num": 2,
-        "hp": 10,
-        "pos": [150, 0],
-        "interval": [100, 0]
-      }
+      "BezierEnemy": [
+        {
+          "hp": 20,
+          "pos": [100, 0]
+        },
+        {
+          "hp": 20,
+          "pos": [200, 0]
+        },
+        {
+          "hp": 20,
+          "pos": [300, 0]
+        }
+      ],
+      "NormalEnemy": [
+        {
+          "hp": 10,
+          "pos": [150, 0],
+          "drop": ["PowerDrop"]
+        },
+        {
+          "hp": 10,
+          "pos": [250, 0],
+          "drop": ["PowerDrop"]
+        }
+      ]
     }
   },
   {
-    "time": 7500,
+    "time": 6000,
     "boss": false,
     "enemys": {
-      "RadioEnemy": {
-        "num": 2,
-        "hp": 20,
-        "pos": [80, 0],
-        "interval": [240, 0]
-      }
+      "RadioEnemy": [
+        {
+          "hp": 20,
+          "pos": [80, 0]
+        },
+        {
+          "hp": 20,
+          "pos": [320, 0]
+        }
+      ]
     }
   },
   {
-    "time": 12000,
+    "time": 3000,
     "boss": false,
     "enemys": {
-      "BezierEnemy": {
-        "num": 3,
-        "hp": 20,
-        "pos": [125, 0],
-        "interval": [100, 0]
-      },
-      "NormalEnemy": {
-        "num": 2,
-        "hp": 10,
-        "pos": [175, 0],
-        "interval": [100, 0]
-      }
+      "BezierEnemy": [
+        {
+          "hp": 20,
+          "pos": [100, 0]
+        },
+        {
+          "hp": 20,
+          "pos": [200, 0]
+        },
+        {
+          "hp": 20,
+          "pos": [300, 0]
+        }
+      ],
+      "RingEnemy": [
+        {
+          "hp": 40,
+          "pos": [150, 0]
+        },
+        {
+          "hp": 40,
+          "pos": [250, 0]
+        }
+      ]
     }
   },
   {

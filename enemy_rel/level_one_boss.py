@@ -8,13 +8,12 @@ from utils.const import *
 
 
 class LevelOneBoss(BaseEnemy):
-    def __init__(self, pos: Vector2, time_wait: int, *groups: Group) -> None:
-        super().__init__(pos, 1, *groups)
+    def __init__(self, pos: Vector2, *groups: Group) -> None:
+        super().__init__(pos, 1, None, *groups)
         #  Boss always start with 1 hp, then it will hard code between stages
         self.image = pygame.image.load("./images/enemy_battle.png")
         self.mask = pygame.mask.from_surface(self.image)
         self.rect = self.image.get_rect(center=self.pos)
-        self.time_wait = time_wait
         self.shot_shift = 0
         self.hp = 0
         self.stage = 0
@@ -34,9 +33,7 @@ class LevelOneBoss(BaseEnemy):
 
     def stage_0_action(self):
         self.on_hit(player_ammo, 99999)
-        if self.time_wait > 0:
-            self.time_wait -= 1000 / 60
-        elif self.pos.y < 200:
+        if self.pos.y < 200:
             self.pos += Vector2(0, 1)
             self.rect.center = self.pos
         else:
@@ -44,7 +41,7 @@ class LevelOneBoss(BaseEnemy):
 
     def stage_1_action(self):
         self.on_hit(player_ammo, 99999)
-        self.max_hp = 120
+        self.max_hp = 200
         if self.hp < self.max_hp:
             self.hp += self.max_hp / FPS
         else:
@@ -74,7 +71,7 @@ class LevelOneBoss(BaseEnemy):
             self.last_shot = pygame.time.get_ticks()
 
     def stage_4_action(self):
-        self.on_hit(player_ammo)
+        self.on_hit(player_ammo, 99999)
         self.on_time(1)
         if self.dead:
             self.kill()

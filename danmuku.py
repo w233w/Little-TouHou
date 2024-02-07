@@ -4,7 +4,7 @@ from pygame import Vector2
 from utils.const import *
 from utils.debug import draw_hp_bar
 from player_rel import Player
-from enemy_rel import *
+from enemy_rel import ENEMYS
 from statistics import mean
 from group_controller import *
 
@@ -23,7 +23,7 @@ clock = pygame.time.Clock()
 if "得意黑斜体" in pygame.font.get_fonts():
     Font = pygame.font.SysFont("得意黑斜体", 30)
 else:
-    Font = pygame.font.SysFont("timesnewroman", 30)
+    Font = pygame.font.SysFont("simhei", 30)
 win_info = Font.render("YOU WIN!!", True, Red, None)
 lose_info = Font.render("YOU LOSE", True, Red, None)
 welcome = Font.render("Little-Touhou", True, Red, None)
@@ -67,38 +67,40 @@ while running := True:
         screen.fill(pygame.Color(BackgroundColor))
         screen.blit(fps_text, (310, 50))
 
+        current_time = pygame.time.get_ticks()
+
         # 根据时间线创建敌人波次
         if timeline:
             next_wave = timeline[0]
-            if (
-                not next_wave["boss"]
-                and pygame.time.get_ticks() - next_wave["time"] >= last_wave
-            ):
+            if not next_wave["boss"] and current_time - last_wave >= next_wave["time"]:
                 wave_enemys = next_wave["enemys"]
-                for enemy_name, enemy_prop in wave_enemys.items():
-                    for i in range(enemy_prop["num"]):
+                for enemy_name, enemy_props in wave_enemys.items():
+                    for enemy_prop in enemy_props:
                         pos_x, pos_y = enemy_prop["pos"]
-                        inter_x, inter_y = enemy_prop["interval"]
-                        hp = enemy_prop["hp"]
-                        spawning_enemy_class: BaseEnemy = globals()[enemy_name]
+                        spawning_enemy_class = ENEMYS[enemy_name]
                         spawning_enemy_class(
-                            Vector2(pos_x + inter_x * i, pos_y + inter_y * i),
-                            hp,
+                            Vector2(pos_x, pos_y),
+                            enemy_prop["hp"],
+                            enemy_prop.get("drop", []),
                             enemys,
                         )
                 timeline.pop(0)
-                last_wave = pygame.time.get_ticks()
-            elif next_wave["boss"] and len(enemys.sprites()) == 0:
+                last_wave = current_time
+            elif (
+                next_wave["boss"]
+                and len(enemys.sprites()) == 0
+                and current_time - last_wave >= next_wave["time"]
+            ):
                 wave_enemys = next_wave["enemys"]
                 for enemy_name, enemy_prop in wave_enemys.items():
                     pos_x, pos_y = enemy_prop["pos"]
-                    time_wait = next_wave["time"]
-                    spawning_enemy_class = globals()[enemy_name]
-                    spawning_enemy_class(Vector2(pos_x, pos_y), time_wait, enemys)
+                    spawning_enemy_class = ENEMYS[enemy_name]
+                    spawning_enemy_class(Vector2(pos_x, pos_y), enemys)
                 timeline.pop(0)
-                last_wave = pygame.time.get_ticks()
+                last_wave = current_time
         elif len(enemys.sprites()) == 0:
             screen.blit(win_info, (200, 100))
+            screen.blit(restart_info, (120, 400))
             if pygame.mouse.get_pressed(num_buttons=3)[0]:
                 # 时间线
                 with open("./utils/timeline.json") as f:
